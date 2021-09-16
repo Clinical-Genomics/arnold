@@ -1,0 +1,10 @@
+click
+PyYAML
+pydantic
+fastapi
+pandas
+gunicorn
+uvicorn
+pymongo
+mongo_adapter
+beanie

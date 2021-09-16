@@ -1,9 +1,9 @@
 from typing import Optional
-from arnold.models.database.prep.prep import Prep
+
+from pydantic import BaseModel
 
 
-class MicrobialPrep(Prep):
-    workflow: str = "Microbial-WGS"
+class MicrobialPrep(BaseModel):
     sample_concentration: Optional[float]
     lot_nr_beads_buffer_exchange: Optional[str]
     lot_nr_etoh_buffer_exchange: Optional[str]

@@ -3,7 +3,6 @@ from typing import Optional
 
 from pydantic import BaseSettings
 
-
 ARNOLD_PACKAGE = Path(__file__).parent
 PACKAGE_ROOT: Path = ARNOLD_PACKAGE.parent
 ENV_FILE: Path = PACKAGE_ROOT / ".env"
@@ -24,18 +23,4 @@ class Settings(BaseSettings):
         env_file = str(ENV_FILE)
 
 
-class EmailSettings(BaseSettings):
-    """Settings for sending email"""
-
-    admin_email: Optional[str]
-    sender_prefix: Optional[str]
-    mail_uri: Optional[str]
-    website_uri: Optional[str]
-    email_server_alias: Optional[str]
-
-    class Config:
-        env_file = str(ENV_FILE)
-
-
 settings = Settings()
-email_settings = EmailSettings()

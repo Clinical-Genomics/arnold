@@ -1,0 +1,7 @@
+pytest>=5.2
+pytest-cov
+pytest-mock
+coveralls
+pylint
+mock
+pydantic[dotenv]

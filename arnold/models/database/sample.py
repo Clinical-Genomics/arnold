@@ -5,6 +5,8 @@ from beanie import Document
 
 
 class Sample(Document):
+    """LIMS Sample Collection"""
+
     sample_id: str
     application_tag: Optional[str] = Field(..., alias="Sequencing Analysis")
     category: Optional[str]
