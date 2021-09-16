@@ -16,13 +16,14 @@ with open("README.md", "r") as fh:
 
 
 setup(
-    name="ARNOLD",
+    name="arnold",
     version=version,
+    license="MIT",
     description="Clinical Genomics Core database and REST api",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Maya Brandi",
-    url="https://github.com/Clinical-Genomics/ARNOLD",
+    url="https://github.com/Clinical-Genomics/arnold",
     author_email="maya.brandi@scilifelab.se",
     packages=find_packages(),
     include_package_data=True,
