@@ -29,6 +29,3 @@ class MicrobialPrep(BaseModel):
     lot_nr_dilution_buffer_library_normalization: Optional[str]
     normalized_library_concentration: Optional[float]
     library_normalization_method: Optional[str]
-
-    class Config:
-        allow_population_by_field_name = True
