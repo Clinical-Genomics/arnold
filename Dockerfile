@@ -16,7 +16,7 @@ ENV DB_NAME="arnold-demo"
 
 EXPOSE 8000
 
-WORKDIR /home/worker/app    ### Glömmer alltid vad detta gör. Commentera
+WORKDIR /home/worker/app
 COPY . /home/worker/app
 
 # Install app requirements
