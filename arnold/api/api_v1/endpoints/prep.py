@@ -29,13 +29,11 @@ async def get_preps():
 @router.post("/prep/", response_model=Prep)
 async def create_prep(response: Response, prep: Prep):
     if Prep.find_one(Prep.id == prep.id):
-        print("already in db")
         return "Prep already in database"
     try:
         await prep.create()
         LOG.info("Prep %s inserted to the database", prep.prep_id)
     except:
-        print("could not insert")
         raise InsertError(message="could not insert")
     return prep
 
