@@ -15,7 +15,6 @@ app = FastAPI()
 
 @app.exception_handler(BulkWriteError)
 async def exception_handler(request: Request, exc: BulkWriteError) -> JSONResponse:
-    print("exceptiom handler")
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST, content=exc.details.get("writeErrors")
     )

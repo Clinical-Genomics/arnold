@@ -1,29 +1,30 @@
 from typing import Optional
 from pydantic import Field
-from datetime import date
+from datetime import datetime
 from beanie import Document
 
 
 class Sample(Document):
     """LIMS Sample Collection"""
 
+    id: Optional[str] = Field(alias="_id")
     sample_id: str
-    application_tag: Optional[str] = Field(..., alias="Sequencing Analysis")
+    application_tag: Optional[str]
     category: Optional[str]
-    received_date: Optional[date] = Field(..., alias="Received at")
-    delivery_date: Optional[date] = Field(..., alias="Delivered at")
-    sequenced_date: Optional[date] = Field(..., alias="Sequencing Finished")
-    prepared_date: Optional[date] = Field(..., alias="Library Prep Finished")
+    received_date: Optional[datetime]
+    delivery_date: Optional[datetime]
+    sequenced_date: Optional[datetime]
+    prepared_date: Optional[datetime]
     sequenced_to_delivered: Optional[int]
     prepped_to_sequenced: Optional[int]
     received_to_prepped: Optional[int]
     received_to_delivered: Optional[int]
-    family: Optional[str] = Field(..., alias="Family")
-    strain: Optional[str] = Field(..., alias="Strain")
-    source: Optional[str] = Field(..., alias="Source")
-    customer: Optional[str] = Field(..., alias="customer")
-    priority: Optional[str] = Field(..., alias="priority")  # exist?
-    initial_qc: Optional[str] = Field(..., alias="Passed Initial QC")
-    library_qc: Optional[str] = Field(..., alias="Passed Library QC")
-    prep_method: Optional[str] = Field(..., alias="Prep Method")
-    sequencing_qc: Optional[str] = Field(..., alias="Passed Sequencing QC")
+    family: Optional[str]
+    strain: Optional[str]
+    source: Optional[str]
+    customer: Optional[str]
+    priority: Optional[str]
+    initial_qc: Optional[str]
+    library_qc: Optional[str]
+    prep_method: Optional[str]
+    sequencing_qc: Optional[str]

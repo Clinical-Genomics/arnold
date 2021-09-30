@@ -1,11 +1,9 @@
-from typing import List, Dict
+from typing import List
 
 from fastapi import APIRouter, Depends, Response, status
-from pymongo.errors import BulkWriteError
 from fastapi.responses import JSONResponse
 
 from arnold.crud.read import find_prep
-from arnold.exceptions import InsertError
 from arnold.models.database.prep.prep import Prep
 import logging
 
@@ -27,18 +25,30 @@ async def get_preps():
 
 
 @router.post("/prep/", response_model=Prep)
-async def create_prep(response: Response, prep: Prep):
+async def create_prep(response: Response, prep: Prep) -> JSONResponse:
     if Prep.find_one(Prep.id == prep.id):
-        return "Prep already in database"
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Prep already in database"
+        )
     try:
         await prep.create()
         LOG.info("Prep %s inserted to the database", prep.prep_id)
-    except:
-        raise InsertError(message="could not insert")
-    return prep
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
+    return JSONResponse(status_code=status.HTTP_200_OK, content="Prep inserted to db")
 
 
 @router.post("/preps/")
 async def create_preps(preps: List[Prep]) -> JSONResponse:
-    await Prep.insert_many(preps)
+    try:
+        await Prep.insert_many(preps)
+        LOG.info("Preps inserted to the database")
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
     return JSONResponse(status_code=status.HTTP_200_OK, content="Preps inserted to db")
