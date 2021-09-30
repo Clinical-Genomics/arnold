@@ -8,7 +8,11 @@ class ArnoldError(Exception):
 
 
 class InsertError(ArnoldError):
-    def __init__(self, message: str, code: Optional[int] = status.HTTP_405_METHOD_NOT_ALLOWED):
+    def __init__(
+        self,
+        message: str,
+        code: Optional[int] = status.HTTP_405_METHOD_NOT_ALLOWED,
+    ):
         self.message = message
         self.code = code
         super().__init__(message)
