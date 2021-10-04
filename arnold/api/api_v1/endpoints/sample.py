@@ -1,9 +1,13 @@
+from arnold.adapter import ArnoldAdapter
+from arnold.crud import create, update, read
 from arnold.crud.read import find_sample
 from arnold.models.database import Sample
 from typing import List
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 import logging
+
+from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
 
@@ -11,42 +15,73 @@ router = APIRouter()
 
 
 @router.get("/sample/{sample_id}", response_model=Sample)
-async def get_sample_by_id(sample: Sample = Depends(find_sample)):
+def get_sample(
+    sample_id: str,
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+):
     """fetch a sample by sample id"""
+    sample: Sample = read.find_sample(sample_id=sample_id, adapter=adapter)
     return sample
 
 
 @router.get("/samples/", response_model=List[Sample])
-async def get_samples():
+def get_samples(
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+):
     """Get all samples"""
-    return await Sample.find_all().to_list()
+    samples: List[Sample] = read.find_all_samples(adapter=adapter)
+
+    return samples
 
 
-@router.post("/sample/", response_model=Sample)
-async def create_sample(response: Response, sample: Sample) -> JSONResponse:
-    if Sample.find_one(Sample.id == sample.id):
+@router.post("/sample/")
+def create_sample(
+    sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
+    if find_sample(sample_id=sample.sample_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Sample already in database"
         )
     try:
-        await sample.create()
-        LOG.info("Sample %s inserted to the database", sample.sample_id)
+        create.create_sample(adapter=adapter, sample=sample)
     except Exception as e:
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Sample inserted to db")
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
+    )
 
 
 @router.post("/samples/")
-async def create_samples(samples: List[Sample]) -> JSONResponse:
+def create_samples(
+    samples: List[Sample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
     try:
-        await Sample.insert_many(samples)
-        LOG.info("Samples inserted to the database")
+        create.create_samples(adapter=adapter, samples=samples)
     except Exception as e:
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
     return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
+
+
+@router.put("/sample/")
+def update_sample(
+    sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
+
+    try:
+        update.update_sample(adapter=adapter, sample=sample)
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
+    )

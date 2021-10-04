@@ -7,4 +7,3 @@ gunicorn
 uvicorn
 pymongo
 mongo_adapter
-beanie

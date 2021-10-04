@@ -1,7 +1,9 @@
 from pathlib import Path
-from typing import Optional
+from pymongo import MongoClient
 
 from pydantic import BaseSettings
+
+from arnold.adapter import ArnoldAdapter
 
 ARNOLD_PACKAGE = Path(__file__).parent
 PACKAGE_ROOT: Path = ARNOLD_PACKAGE.parent
@@ -24,3 +26,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_arnold_adapter():
+    client = MongoClient(settings.db_uri)
+    return ArnoldAdapter(client, db_name=settings.db_name)
