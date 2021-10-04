@@ -85,3 +85,18 @@ def update_sample(
     return JSONResponse(
         status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
     )
+
+
+@router.put("/samples/")
+def update_samples(
+    samples: List[Sample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
+
+    try:
+        update.update_samples(adapter=adapter, samples=samples)
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
+    return JSONResponse(status_code=status.HTTP_200_OK, content=f"Samples inserted to db")

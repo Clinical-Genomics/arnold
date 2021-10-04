@@ -82,3 +82,18 @@ def update_prep(prep: Prep, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
     return JSONResponse(
         status_code=status.HTTP_200_OK, content=f"Prep {prep.prep_id} inserted to db"
     )
+
+
+@router.put("/preps/")
+def update_preps(
+    preps: List[Prep], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
+
+    try:
+        update.update_preps(adapter=adapter, preps=preps)
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
+    return JSONResponse(status_code=status.HTTP_200_OK, content=f"Preps inserted to db")
