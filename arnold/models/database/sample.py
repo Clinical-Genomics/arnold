@@ -1,14 +1,13 @@
 from typing import Optional
-from pydantic import Field
+from pydantic import Field, BaseModel, validator
 from datetime import datetime
-from beanie import Document
 
 
-class Sample(Document):
+class Sample(BaseModel):
     """LIMS Sample Collection"""
 
-    id: Optional[str] = Field(alias="_id")
     sample_id: str
+    id: Optional[str] = Field(..., alias="_id")
     application_tag: Optional[str]
     category: Optional[str]
     received_date: Optional[datetime]
@@ -28,3 +27,12 @@ class Sample(Document):
     library_qc: Optional[str]
     prep_method: Optional[str]
     sequencing_qc: Optional[str]
+
+    @validator("id", always=True)
+    def set_id(cls, v, values: dict) -> str:
+        """sett _id to prep_id"""
+
+        return values.get("sample_id")
+
+    class Config:
+        allow_population_by_field_name = True

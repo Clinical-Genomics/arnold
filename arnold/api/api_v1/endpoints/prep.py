@@ -1,11 +1,14 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
-from arnold.crud.read import find_prep
+from arnold.adapter import ArnoldAdapter
+from arnold.crud import create, update, read
 from arnold.models.database.prep.prep import Prep
 import logging
+
+from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
 
@@ -13,42 +16,69 @@ router = APIRouter()
 
 
 @router.get("/prep/{prep_id}", response_model=Prep)
-async def get_prep_by_id(prep: Prep = Depends(find_prep)):
+def get_prep_by_id(
+    prep_id: str,
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+):
     """fetch a prep by prep id"""
+    prep: Prep = read.find_prep(prep_id=prep_id, adapter=adapter)
     return prep
 
 
 @router.get("/preps/", response_model=List[Prep])
-async def get_preps():
+def get_preps(
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+):
     """Get all preps"""
-    return await Prep.find_all().to_list()
+    preps: List[Prep] = read.find_all_preps(adapter=adapter)
+
+    return preps
 
 
-@router.post("/prep/", response_model=Prep)
-async def create_prep(response: Response, prep: Prep) -> JSONResponse:
-    if Prep.find_one(Prep.id == prep.id):
+@router.post("/prep/")
+def create_prep(prep: Prep, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
+    if read.find_prep(prep_id=prep.prep_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Prep already in database"
         )
     try:
-        await prep.create()
-        LOG.info("Prep %s inserted to the database", prep.prep_id)
+        create.create_prep(adapter=adapter, prep=prep)
     except Exception as e:
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Prep inserted to db")
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content=f"Prep {prep.prep_id} inserted to db"
+    )
 
 
 @router.post("/preps/")
-async def create_preps(preps: List[Prep]) -> JSONResponse:
+def create_preps(
+    preps: List[Prep], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
     try:
-        await Prep.insert_many(preps)
-        LOG.info("Preps inserted to the database")
+        create.create_preps(adapter=adapter, preps=preps)
     except Exception as e:
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
     return JSONResponse(status_code=status.HTTP_200_OK, content="Preps inserted to db")
+
+
+@router.put("/prep/")
+def update_prep(prep: Prep, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
+
+    try:
+        update.update_prep(adapter=adapter, prep=prep)
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content=f"Prep {prep.prep_id} inserted to db"
+    )
