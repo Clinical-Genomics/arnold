@@ -16,6 +16,6 @@ class ArnoldAdapter(MongoAdapter):
         self.db: Database = self.client[db_name]
         self.db_name: str = db_name
         self.sample_collection: Collection = self.db.sample
-        self.prep_collection: Collection = self.db.prep
+        self.step_collection: Collection = self.db.step
 
         LOG.info("Use database %s.", db_name)
