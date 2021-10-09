@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from arnold.adapter import ArnoldAdapter
 from arnold.crud import create, update, read
-from arnold.models.database.step.step import Step
+from arnold.models.database.step import Step
 import logging
 
 from arnold.settings import get_arnold_adapter

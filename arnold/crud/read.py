@@ -1,7 +1,7 @@
 from typing import Optional, List
 from pydantic import parse_obj_as
 
-from arnold.models.database.step.step import Step
+from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
 
