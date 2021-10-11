@@ -18,8 +18,8 @@ class Step(BaseModel):
     container_name: Optional[str]
     index_name: Optional[str]
     nr_samples: Optional[int]
-    artifact_udfs: Optional[Dict[str]]
-    process_udfs: Optional[Dict[str]]
+    artifact_udfs: Optional[dict]
+    process_udfs: Optional[dict]
 
     class Config:
         allow_population_by_field_name = True
