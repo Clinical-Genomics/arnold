@@ -1,7 +1,7 @@
 from typing import Optional, List
 from pydantic import parse_obj_as
 
-from arnold.models.database.prep.prep import Prep
+from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
 
@@ -16,25 +16,24 @@ def find_sample(adapter: ArnoldAdapter, sample_id: str) -> Optional[Sample]:
 
 
 def find_all_samples(adapter: ArnoldAdapter) -> List[Sample]:
-    """Find all samples from the prep collection"""
-    print("hej")
+    """Find all samples from the step collection"""
     raw_samples = adapter.sample_collection.find()
     return parse_obj_as(List[Sample], list(raw_samples))
 
 
-def find_prep(adapter: ArnoldAdapter, prep_id: str) -> Optional[Prep]:
-    """Find one prep from the prep collection"""
+def find_step(adapter: ArnoldAdapter, step_id: str) -> Optional[Step]:
+    """Find one step from the step collection"""
 
-    raw_prep = adapter.prep_collection.find_one({"_id": prep_id})
-    if not raw_prep:
+    raw_step = adapter.step_collection.find_one({"_id": step_id})
+    if not raw_step:
         return None
 
-    return Prep(**raw_prep)
+    return Step(**raw_step)
 
 
-def find_all_preps(adapter: ArnoldAdapter) -> List[Prep]:
-    """Find all preps from the prep collection"""
+def find_all_steps(adapter: ArnoldAdapter) -> List[Step]:
+    """Find all steps from the step collection"""
 
-    raw_preps = adapter.prep_collection.find()
+    raw_steps = adapter.step_collection.find()
 
-    return parse_obj_as(List[Prep], list(raw_preps))
+    return parse_obj_as(List[Step], list(raw_steps))

@@ -1,7 +1,7 @@
 from typing import List
 
 from arnold.adapter import ArnoldAdapter
-from arnold.models.database import Sample, Prep
+from arnold.models.database import Sample, Step
 from pymongo.results import InsertManyResult, InsertOneResult
 import logging
 
@@ -17,17 +17,17 @@ def create_samples(adapter: ArnoldAdapter, samples: List[Sample]) -> List[str]:
     return result.inserted_ids
 
 
-def create_preps(adapter: ArnoldAdapter, preps: List[Prep]) -> List[str]:
+def create_steps(adapter: ArnoldAdapter, steps: List[Step]) -> List[str]:
     """Function to create sample document."""
 
-    preps_dict = [prep.dict(by_alias=True, exclude_none=True) for prep in preps]
-    result: InsertManyResult = adapter.prep_collection.insert_many(preps_dict)
-    LOG.info("Added preps documents.")
+    steps_dict = [step.dict(by_alias=True, exclude_none=True) for step in steps]
+    result: InsertManyResult = adapter.step_collection.insert_many(steps_dict)
+    LOG.info("Added steps documents.")
     return result.inserted_ids
 
 
 def create_sample(adapter: ArnoldAdapter, sample: Sample) -> List[str]:
-    """Function to create prep documents."""
+    """Function to create step documents."""
 
     result: InsertOneResult = adapter.sample_collection.insert_one(
         sample.dict(by_alias=True, exclude_none=True)
@@ -36,11 +36,11 @@ def create_sample(adapter: ArnoldAdapter, sample: Sample) -> List[str]:
     return result.inserted_id
 
 
-def create_prep(adapter: ArnoldAdapter, prep: Prep) -> List[str]:
-    """Function to create prep document."""
+def create_step(adapter: ArnoldAdapter, step: Step) -> List[str]:
+    """Function to create step document."""
 
-    result: InsertOneResult = adapter.prep_collection.insert_one(
-        prep.dict(by_alias=True, exclude_none=True)
+    result: InsertOneResult = adapter.step_collection.insert_one(
+        step.dict(by_alias=True, exclude_none=True)
     )
-    LOG.info("Updating prep %s", prep.prep_id)
+    LOG.info("Updating step %s", step.step_id)
     return result.inserted_id

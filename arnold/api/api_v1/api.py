@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request, status
 from pymongo.errors import BulkWriteError
 
 from arnold.api.api_v1.endpoints import sample
-from arnold.api.api_v1.endpoints import prep
+from arnold.api.api_v1.endpoints import step
 
 
 app = FastAPI()
@@ -22,4 +22,4 @@ async def root():
 
 
 app.include_router(sample.router, prefix="/api/v1", tags=["sample"])
-app.include_router(prep.router, prefix="/api/v1", tags=["prep"])
+app.include_router(step.router, prefix="/api/v1", tags=["prep"])
