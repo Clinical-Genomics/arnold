@@ -8,6 +8,7 @@ class Sample(BaseModel):
 
     sample_id: str
     id: Optional[str] = Field(..., alias="_id")
+    ticket: Optional[str]
     received_date: Optional[datetime]
     delivery_date: Optional[datetime]
     sequenced_date: Optional[datetime]
