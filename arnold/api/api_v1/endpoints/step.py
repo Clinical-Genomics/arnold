@@ -27,13 +27,10 @@ def get_workflows(
     return list(res)
 
 
-# @router.get("/step/step_types")
-# def get_step_types(
-#   workflow: str,
-#  adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-# ):
-#    """Get available workflows in the database"""
-#    return adapter.step_collection.find({"workflow": {"$eq": workflow}}).distinct("step_type")
+@router.get("/step/query_rules")
+def get_query_rules():
+    """Get possible rules"""
+    return ["$lt", "$eq", "$gt"]
 
 
 @router.get("/step/step_type/process_udfs")

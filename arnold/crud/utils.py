@@ -18,7 +18,11 @@ def join_udf_rules(
     udf_values: Optional[list[str]],
 ) -> list:
     zipped_rules = list(zip(udf_names, udf_rules, udf_values))
-    return [
-        {f"{udf_type}_udfs.{udf_name}": {udf_rule: int(udf_value)}}
-        for udf_name, udf_rule, udf_value in zipped_rules
-    ]
+    udf_queries = []
+    for udf_name, udf_rule, udf_value in zipped_rules:
+        try:
+            udf_value = float(udf_value)
+        except:
+            pass
+        udf_queries.append({f"{udf_type}_udfs.{udf_name}": {udf_rule: udf_value}})
+    return udf_queries
