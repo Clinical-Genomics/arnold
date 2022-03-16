@@ -4,9 +4,18 @@ from pymongo.errors import BulkWriteError
 
 from arnold.api.api_v1.endpoints import sample
 from arnold.api.api_v1.endpoints import step
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(BulkWriteError)
