@@ -1,4 +1,4 @@
-from typing import List, Optional, Literal
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
@@ -16,11 +16,11 @@ LOG = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/workflows")
+@router.get("/step/workflows")
 def get_workflows(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """Get available workflows and step types in the database"""
+    """Get available workflows and step types from the step collection"""
     res = adapter.step_collection.aggregate(
         [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
     )
@@ -29,8 +29,14 @@ def get_workflows(
 
 @router.get("/step/query_rules")
 def get_query_rules():
-    """Get possible rules"""
-    return ["$lt", "$eq", "$gt"]
+    """Get possible filtering rules."""
+    return [
+        {"mongo_rule": "$lt", "readable": "less than"},
+        {"mongo_rule": "$gt", "readable": "greater than"},
+        {"mongo_rule": "$eq", "readable": "equal to"},
+        {"mongo_rule": "$lte", "readable": "less than or equal to"},
+        {"mongo_rule": "$gte", "readable": "greater than or equal to"},
+    ]
 
 
 @router.get("/step/step_type/process_udfs")
@@ -39,7 +45,7 @@ def get_step_type_process_udfs(
     workflow: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """fetch a step by step id"""
+    """Get available process udfs for a step type"""
     return read.find_step_type_process_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow, udf_from="process"
     )
@@ -51,7 +57,7 @@ def get_step_type_artifact_udfs(
     workflow: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """fetch a step by step id"""
+    """Get available artifact udfs for a step type"""
     return read.find_step_type_process_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow, udf_from="artifact"
     )
@@ -78,7 +84,7 @@ def get_steps(
     process_udf_value: list[Optional[str]] = Query(None),
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """Get all steps"""
+    """Get steps based on filters"""
 
     steps: List[Step] = read.query_steps(
         adapter=adapter,
@@ -155,4 +161,4 @@ def update_steps(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content=f"steps inserted to db")
+    return JSONResponse(status_code=status.HTTP_200_OK, content="steps inserted to db")

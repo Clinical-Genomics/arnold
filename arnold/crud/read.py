@@ -2,9 +2,8 @@ from typing import Optional, List, Literal, Iterable
 
 import pymongo
 from pydantic import parse_obj_as
-from pymongo.command_cursor import CommandCursor
-
 from arnold.crud.utils import paginate, join_udf_rules
+from arnold.exceptions import MissingResultsError
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
@@ -131,5 +130,5 @@ def find_step_type_process_udfs(
     ]
     aggregation_result = list(adapter.step_collection.aggregate(pipe))
     if not aggregation_result:
-        raise  ## fix error
+        raise MissingResultsError("Not found")
     return aggregation_result[0].get("all_udfs")
