@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Literal
 
 from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
@@ -8,7 +8,6 @@ from arnold.crud import create, update, read
 from arnold.models.database.step import Step
 import logging
 
-from arnold.models.query_params import StepsQuery
 from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
@@ -75,7 +74,18 @@ def get_step_by_id(
 
 @router.get("/steps/", response_model=List[Step])
 def get_steps(
-    steps_query: StepsQuery = Depends(StepsQuery),
+    page_size: Optional[int] = 5,
+    page_num: Optional[int] = 0,
+    sort_direction: Optional[Literal["ascend", "descend"]] = "descend",
+    sort_key: Optional[str] = "sample_id",
+    well_position: Optional[str] = None,
+    artifact_name: Optional[str] = None,
+    container_name: Optional[str] = None,
+    container_id: Optional[str] = None,
+    container_type: Optional[Literal["96 well plate", "Tube"]] = None,
+    index_name: Optional[str] = None,
+    workflow: Optional[str] = None,
+    step_type: Optional[str] = None,
     artifact_udf: Optional[List[str]] = Query(None),
     artifact_udf_rule: Optional[list[str]] = Query(None),
     artifact_udf_value: Optional[list[str]] = Query(None),
@@ -88,7 +98,18 @@ def get_steps(
 
     steps: List[Step] = read.query_steps(
         adapter=adapter,
-        **steps_query.dict(),
+        page_size=page_size,
+        page_num=page_num,
+        sort_direction=sort_direction,
+        sort_key=sort_key,
+        well_position=well_position,
+        artifact_name=artifact_name,
+        container_name=container_name,
+        container_id=container_id,
+        container_type=container_type,
+        index_name=index_name,
+        workflow=workflow,
+        step_type=step_type,
         artifact_udf=artifact_udf,
         artifact_udf_rule=artifact_udf_rule,
         artifact_udf_value=artifact_udf_value,
@@ -96,7 +117,6 @@ def get_steps(
         process_udf_rule=process_udf_rule,
         process_udf_value=process_udf_value,
     )
-
     return steps
 
 

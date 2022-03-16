@@ -17,6 +17,7 @@ def join_udf_rules(
     udf_rules: Optional[list[str]],
     udf_values: Optional[list[str]],
 ) -> list:
+    """Joining udf rules into query strings"""
     zipped_rules = list(zip(udf_names, udf_rules, udf_values))
     udf_queries = []
     for udf_name, udf_rule, udf_value in zipped_rules:

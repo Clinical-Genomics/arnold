@@ -67,7 +67,7 @@ def query_steps(
     page_num: int = 0,
 ) -> List[Step]:
     """
-    Query samples from the sample collection.
+    Query steps from the sample collection.
     Pagination can be enabled with <page_size> and <page_num> options.
     No pagination enabled by default.
     """
