@@ -4,7 +4,7 @@ import pymongo
 from pydantic import parse_obj_as
 from pymongo.command_cursor import CommandCursor
 
-from arnold.crud.utils import paginate
+from arnold.crud.utils import paginate, join_udf_rules
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
@@ -50,14 +50,20 @@ def query_steps(
     adapter: ArnoldAdapter,
     workflow: Optional[str] = None,
     step_type: Optional[str] = None,
-    artifact_udf: Optional[str] = None,
-    artifact_udf_rule: Literal["$gt", "$lt", "$eq"] = None,
-    artifact_udf_value: Optional[str] = None,
-    process_udf: Optional[str] = None,
-    process_udf_rule: Literal["$gt", "$lt", "$eq"] = None,
-    process_udf_value: Optional[str] = None,
+    artifact_udf: Optional[List[str]] = None,
+    artifact_udf_rule: list[Literal["$gt", "$lt", "$eq"]] = None,
+    artifact_udf_value: list[Optional[str]] = None,
+    process_udf: list[Optional[str]] = None,
+    process_udf_rule: list[Literal["$gt", "$lt", "$eq"]] = None,
+    process_udf_value: list[Optional[str]] = None,
     sort_key: Optional[str] = "sample_id",
     sort_direction: Optional[Literal["ascend", "descend"]] = "descend",
+    well_position: Optional[str] = None,
+    artifact_name: Optional[str] = None,
+    container_name: Optional[str] = None,
+    container_id: Optional[str] = None,
+    container_type: Optional[Literal["96 well plate", "Tube"]] = None,
+    index_name: Optional[str] = None,
     page_size: int = 0,
     page_num: int = 0,
 ) -> List[Step]:
@@ -70,13 +76,30 @@ def query_steps(
     query_pipe = [
         {"workflow": workflow or {"$regex": ".*"}},
         {"step_type": step_type or {"$regex": ".*"}},
+        {"well_position": well_position or {"$regex": ".*"}},
+        {"artifact_name": artifact_name or {"$regex": ".*"}},
+        {"container_name": container_name or {"$regex": ".*"}},
+        {"container_id": container_id or {"$regex": ".*"}},
+        {"container_type": container_type or {"$regex": ".*"}},
+        {"index_name": index_name or {"$regex": ".*"}},
     ]
     if artifact_udf and artifact_udf_rule:
-        query_pipe.append(
-            {f"artifact_udfs.{artifact_udf}": {artifact_udf_rule: int(artifact_udf_value)}}
+        udf_filters: list[str] = join_udf_rules(
+            udf_type="artifact",
+            udf_names=artifact_udf,
+            udf_rules=artifact_udf_rule,
+            udf_values=artifact_udf_value,
         )
+        query_pipe += udf_filters
+
     if process_udf and process_udf_rule:
-        query_pipe.append({f"proces_udfs.{process_udf}": {process_udf_rule: process_udf_value}})
+        udf_filters: list[str] = join_udf_rules(
+            udf_type="process",
+            udf_names=process_udf,
+            udf_rules=process_udf_rule,
+            udf_values=process_udf_value,
+        )
+        query_pipe += udf_filters
 
     skip, limit = paginate(page_size=page_size, page_num=page_num)
     raw_steps: Iterable[dict] = (

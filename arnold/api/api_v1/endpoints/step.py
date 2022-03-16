@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional, Literal
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
 
 from arnold.adapter import ArnoldAdapter
@@ -20,17 +20,20 @@ router = APIRouter()
 def get_workflows(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """Get available workflows in the database"""
-    return adapter.step_collection.distinct("workflow")
+    """Get available workflows and step types in the database"""
+    res = adapter.step_collection.aggregate(
+        [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
+    )
+    return list(res)
 
 
-@router.get("/step/step_types")
-def get_step_types(
-    workflow: str,
-    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-):
-    """Get available workflows in the database"""
-    return adapter.step_collection.find({"workflow": {"$eq": workflow}}).distinct("step_type")
+# @router.get("/step/step_types")
+# def get_step_types(
+#   workflow: str,
+#  adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+# ):
+#    """Get available workflows in the database"""
+#    return adapter.step_collection.find({"workflow": {"$eq": workflow}}).distinct("step_type")
 
 
 @router.get("/step/step_type/process_udfs")
@@ -70,11 +73,26 @@ def get_step_by_id(
 @router.get("/steps/", response_model=List[Step])
 def get_steps(
     steps_query: StepsQuery = Depends(StepsQuery),
+    artifact_udf: Optional[List[str]] = Query(None),
+    artifact_udf_rule: Optional[list[str]] = Query(None),
+    artifact_udf_value: Optional[list[str]] = Query(None),
+    process_udf: Optional[list[str]] = Query(None),
+    process_udf_rule: Optional[list[str]] = Query(None),
+    process_udf_value: list[Optional[str]] = Query(None),
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get all steps"""
 
-    steps: List[Step] = read.query_steps(adapter=adapter, **steps_query.dict())
+    steps: List[Step] = read.query_steps(
+        adapter=adapter,
+        **steps_query.dict(),
+        artifact_udf=artifact_udf,
+        artifact_udf_rule=artifact_udf_rule,
+        artifact_udf_value=artifact_udf_value,
+        process_udf=process_udf,
+        process_udf_rule=process_udf_rule,
+        process_udf_value=process_udf_value,
+    )
 
     return steps
 
