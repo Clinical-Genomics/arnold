@@ -4,7 +4,9 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
 
 from arnold.adapter import ArnoldAdapter
+from arnold.constants import QUERY_RULES
 from arnold.crud import create, update, read
+from arnold.crud.read import aggregate_step
 from arnold.models.database.step import Step
 import logging
 
@@ -15,27 +17,19 @@ LOG = logging.getLogger(__name__)
 router = APIRouter()
 
 
+@router.get("/step/query_rules")
+def get_query_rules():
+    """Get possible filtering rules."""
+    return QUERY_RULES
+
+
 @router.get("/step/workflows")
 def get_workflows(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available workflows and step types from the step collection"""
-    res = adapter.step_collection.aggregate(
-        [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
-    )
-    return list(res)
-
-
-@router.get("/step/query_rules")
-def get_query_rules():
-    """Get possible filtering rules."""
-    return [
-        {"mongo_rule": "$lt", "readable": "less than"},
-        {"mongo_rule": "$gt", "readable": "greater than"},
-        {"mongo_rule": "$eq", "readable": "equal to"},
-        {"mongo_rule": "$lte", "readable": "less than or equal to"},
-        {"mongo_rule": "$gte", "readable": "greater than or equal to"},
-    ]
+    pipe = [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
+    return aggregate_step(adapter=adapter, pipe=pipe)
 
 
 @router.get("/step/step_type/process_udfs")

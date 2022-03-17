@@ -1,12 +1,17 @@
 from typing import Optional, List, Literal, Iterable
 
-import pymongo
 from pydantic import parse_obj_as
+
+from arnold.constants import SORT_TABLE
 from arnold.crud.utils import paginate, join_udf_rules
 from arnold.exceptions import MissingResultsError
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
+
+
+def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
+    return list(adapter.step_collection.aggregate(pipe))
 
 
 def find_sample(adapter: ArnoldAdapter, sample_id: str) -> Optional[Sample]:
@@ -32,17 +37,6 @@ def find_step(adapter: ArnoldAdapter, step_id: str) -> Optional[Step]:
         return None
 
     return Step(**raw_step)
-
-
-def find_all_steps(adapter: ArnoldAdapter) -> List[Step]:
-    """Find all steps from the step collection"""
-
-    raw_steps = adapter.step_collection.find()
-
-    return parse_obj_as(List[Step], list(raw_steps))
-
-
-sort_table = {"ascend": pymongo.ASCENDING, "descend": pymongo.DESCENDING}
 
 
 def query_steps(
@@ -103,7 +97,7 @@ def query_steps(
     skip, limit = paginate(page_size=page_size, page_num=page_num)
     raw_steps: Iterable[dict] = (
         adapter.step_collection.find({"$and": query_pipe})
-        .sort(sort_key, sort_table.get(sort_direction))
+        .sort(sort_key, SORT_TABLE.get(sort_direction))
         .skip(skip)
         .limit(limit)
     )
