@@ -2,6 +2,7 @@ from typing import List, Optional, Literal
 
 from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
+from pydantic import parse_obj_as
 
 from arnold.adapter import ArnoldAdapter
 from arnold.constants import QUERY_RULES
@@ -10,6 +11,7 @@ from arnold.crud.read import aggregate_step
 from arnold.models.database.step import Step
 import logging
 
+from arnold.models.responce_models import WorkflowResponce
 from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
@@ -23,13 +25,13 @@ def get_query_rules():
     return QUERY_RULES
 
 
-@router.get("/step/workflows")
-def get_workflows(
-    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-):
+@router.get("/step/workflows", response_model=list[WorkflowResponce])
+def get_workflows(adapter: ArnoldAdapter = Depends(get_arnold_adapter)):
     """Get available workflows and step types from the step collection"""
     pipe = [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
-    return aggregate_step(adapter=adapter, pipe=pipe)
+    workflows: list[dict] = aggregate_step(adapter=adapter, pipe=pipe)
+
+    return parse_obj_as(List[WorkflowResponce], workflows)
 
 
 @router.get("/step/step_type/process_udfs")
