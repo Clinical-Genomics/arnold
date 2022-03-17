@@ -1,9 +1,12 @@
 from typing import Tuple, Optional, Literal
 
 
-def paginate(page_size: int = 0, page_num: int = 0) -> Tuple[int, int]:
+def paginate(page_size: int, page_num: int) -> Tuple[int, int]:
     """Calculate number of documents to skip"""
-
+    if not page_size:
+        return 0, 0
+    if not page_num:
+        return 0, page_size
     skip = page_size * (page_num - 1)
     return skip, page_size
 
