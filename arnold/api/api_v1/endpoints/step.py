@@ -30,7 +30,6 @@ def get_workflows(adapter: ArnoldAdapter = Depends(get_arnold_adapter)):
     """Get available workflows and step types from the step collection"""
     pipe = [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
     workflows: list[dict] = aggregate_step(adapter=adapter, pipe=pipe)
-
     return parse_obj_as(List[WorkflowResponce], workflows)
 
 

@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class WorkflowResponce(BaseModel):
-    _id: str
+    id: str = Field(..., alias="_id")
     step_types: list[str]
