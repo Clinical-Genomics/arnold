@@ -16,3 +16,14 @@ class InsertError(ArnoldError):
         self.message = message
         self.code = code
         super().__init__(message)
+
+
+class MissingResultsError(ArnoldError):
+    def __init__(
+        self,
+        message: str,
+        code: Optional[int] = status.HTTP_404_NOT_FOUND,
+    ):
+        self.message = message
+        self.code = code
+        super().__init__(message)

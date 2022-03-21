@@ -38,7 +38,7 @@ def get_samples(
 def create_sample(
     sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-    if find_sample(sample_id=sample.sample_id, adapter=adapter):
+    if read.find_sample(sample_id=sample.sample_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Sample already in database"
         )
