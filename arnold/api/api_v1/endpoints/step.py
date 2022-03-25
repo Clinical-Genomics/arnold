@@ -40,7 +40,7 @@ def get_step_type_process_udfs(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available process udfs for a step type"""
-    return read.find_step_type_process_udfs(
+    return read.find_step_type_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow, udf_from="process"
     )
 
@@ -52,7 +52,7 @@ def get_step_type_artifact_udfs(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available artifact udfs for a step type"""
-    return read.find_step_type_process_udfs(
+    return read.find_step_type_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow, udf_from="artifact"
     )
 
