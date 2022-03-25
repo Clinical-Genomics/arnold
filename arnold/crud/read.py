@@ -105,7 +105,7 @@ def query_steps(
     return parse_obj_as(List[Step], list(raw_steps))
 
 
-def find_step_type_process_udfs(
+def find_step_type_udfs(
     adapter: ArnoldAdapter, workflow: str, step_type: str, udf_from: Literal["process", "artifact"]
 ) -> list[str]:
     """Getting available process or artifact udfs from specific step type within specific workflow"""
@@ -122,7 +122,10 @@ def find_step_type_process_udfs(
         {"$unwind": "$arrayofkeyvalue"},
         {"$group": {"_id": None, "all_udfs": {"$addToSet": "$arrayofkeyvalue.k"}}},
     ]
-    aggregation_result = list(adapter.step_collection.aggregate(pipe))
-    if not aggregation_result:
-        raise MissingResultsError("Not found")
-    return aggregation_result[0].get("all_udfs")
+    try:
+        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        return aggregation_result[0].get("all_udfs")
+    except:
+        raise MissingResultsError(
+            f"Step type {step_type} in Workflow: {workflow} doesnt seem to have any {udf_from} UDFs in Arnold"
+        )

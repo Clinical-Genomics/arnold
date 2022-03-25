@@ -40,9 +40,16 @@ def get_step_type_process_udfs(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available process udfs for a step type"""
-    return read.find_step_type_process_udfs(
-        adapter=adapter, step_type=step_type, workflow=workflow, udf_from="process"
-    )
+    try:
+        step_type_udfs: List[str] = read.find_step_type_udfs(
+            adapter=adapter, step_type=step_type, workflow=workflow, udf_from="process"
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"Exception: {e} ",
+        )
+    return step_type_udfs
 
 
 @router.get("/step/step_type/artifact_udfs")
@@ -52,9 +59,16 @@ def get_step_type_artifact_udfs(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available artifact udfs for a step type"""
-    return read.find_step_type_process_udfs(
-        adapter=adapter, step_type=step_type, workflow=workflow, udf_from="artifact"
-    )
+    try:
+        step_type_udfs: List[str] = read.find_step_type_udfs(
+            adapter=adapter, step_type=step_type, workflow=workflow, udf_from="artifact"
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content=f"exception {e} ",
+        )
+    return step_type_udfs
 
 
 @router.get("/step/{step_id}", response_model=Step)
@@ -150,7 +164,6 @@ def create_steps(
 
 @router.put("/step/")
 def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
-
     try:
         update.update_step(adapter=adapter, step=step)
     except Exception as e:
@@ -168,7 +181,6 @@ def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 def update_steps(
     steps: List[Step], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-
     try:
         update.update_steps(adapter=adapter, steps=steps)
     except Exception as e:
