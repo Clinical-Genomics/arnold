@@ -126,6 +126,4 @@ def find_step_type_udfs(
         aggregation_result = list(adapter.step_collection.aggregate(pipe))
         return aggregation_result[0].get("all_udfs")
     except:
-        raise MissingResultsError(
-            f"Step type {step_type} in Workflow: {workflow} doesnt seem to have any {udf_from} UDFs in Arnold"
-        )
+        return []
