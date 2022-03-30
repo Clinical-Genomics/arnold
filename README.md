@@ -26,7 +26,7 @@ Create a `.env` file with the variables `DB_NAME` and `DB_URI`
 DB_URI= 'mongodb://localhost:<port>'
 DB_NAME= 'arnold'
 ```
-``
+
 Given you have a MongoDB server listening on the `port` specified in `.env, the arnold rest API can be run from commandline
 
 ```bash
