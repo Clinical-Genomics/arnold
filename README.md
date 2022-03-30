@@ -32,7 +32,6 @@ Given you have a MongoDB server listening on the `port` specified in `.env, the 
 ```bash
 arnold serve --reload
 ```
-``
 
 ### Docker image
 
