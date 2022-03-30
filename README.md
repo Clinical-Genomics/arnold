@@ -1,5 +1,4 @@
-# Arnold  [![Coverage Status](https://coveralls.io/repos/github/Clinical-Genomics/arnold/badge.svg?branch=master)](https://coveralls.io/github/Clinical-Genomics/arnold?branch=master) [![Build Status](https://travis-ci.org/Clinical-Genomics/arnold.svg?branch=master)](https://travis-ci.org/Clinical-Genomics/arnold) [![Latest Release](https://img.shields.io/github/v/release/clinical-genomics/Arnold)]
-
+# Arnold  [![Coverage Status](https://coveralls.io/repos/github/Clinical-Genomics/arnold/badge.svg?branch=master)](https://coveralls.io/github/Clinical-Genomics/arnold?branch=master)
 
 Arnold is a  REST-API and mongodb database with two collections - `sample` and `step`. Currently, soring lims-data only. 
 
