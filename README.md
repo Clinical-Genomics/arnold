@@ -8,7 +8,11 @@ Data is continuously pushed into the database from lims steps via [cg_lims](http
 [Read more about the lims data that is being pushed to Arnold.](https://github.com/Clinical-Genomics/cg_lims#about-arnold)
 
 
-## Installation
+## Usage
+
+### Development
+
+Clone and install:
 
 ```bash
 git clone https://github.com/Clinical-Genomics/arnold
@@ -16,26 +20,19 @@ cd arnold
 pip install -r requirements.txt -e .
 ```
 
-## Usage
+Create a `.env file with the variables `DB_NAME` and `DB_URI`
 
-### Demo
+```
+DB_URI= 'mongodb://localhost:<port>'
+DB_NAME= 'arnold'
+```
 
-**The CLI is intended for development/testing purpose only. To run in a production setting please refer to documentation
-for suggestions how.**
-
-Once installed, you can set up Arnold by running a few commands using the included command line interface. 
-Given you have a MongoDB server listening on the default port (27017), this is how you would set up a fully working 
-Arnold demo:
-
-Create a .env file with the variables `DB_NAME` and `DB_URI`.
- 
-FIX a demo
-
+Given you have a MongoDB server listening on the `port` specified in `.env, the arnold rest API can be run from commandline
 
 ```bash
 arnold serve --reload
 ```
-
+``
 
 ### Docker image
 
