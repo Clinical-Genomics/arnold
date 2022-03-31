@@ -131,47 +131,12 @@ def find_step_type_udfs(
 
 def query_trend(
     adapter: ArnoldAdapter,
+    year: int,
     workflow: str = "TWIST",
     step_type: str = "aliquot_samples_for_enzymatic_fragmentation",
     udf: str = "artifact_udfs.amount_needed",
     group: str = "sample.application",
 ):
-    pipe = [
-        {
-            "$lookup": {
-                "from": "sample",
-                "localField": "sample_id",
-                "foreignField": "_id",
-                "as": "sample",
-            }
-        },
-        {"$unwind": {"path": "$sample"}},
-        {
-            "$match": {
-                "date_run": {"$exists": "True"},
-                "workflow": workflow,
-                "step_type": step_type,
-                udf: {"$exists": "True"},
-                group: {"$exists": "True"},
-            }
-        },
-        {
-            "$project": {
-                "month": {"$month": "$date_run"},
-                "year": {"$year": "$date_run"},
-                udf: f"${udf}",
-                group: f"${group}",
-            }
-        },
-        {"$match": {"year": 2021}},
-        {
-            "$group": {
-                "_id": {"month": "$month", group: f"${group}"},
-                udf: {"$push": f"${udf}"},
-            }
-        },
-    ]
-
     pipe = [
         {
             "$lookup": {
@@ -199,7 +164,7 @@ def query_trend(
                 group: 1,
             }
         },
-        {"$match": {"year": 2021}},
+        {"$match": {"year": year}},
         {
             "$group": {
                 "_id": {"month": "$month", group.replace(".", "_"): f"${group}"},
@@ -208,7 +173,48 @@ def query_trend(
         },
     ]
     try:
-        aggregation_result = list(adapter.step_collection.aggregate(pipe))
-        return aggregation_result
+        return list(adapter.step_collection.aggregate(pipe))
+    except:
+        return []
+
+
+def query_compare(
+    adapter: ArnoldAdapter,
+    workflow: str = "TWIST",
+    step_type_x: str = "aliquot_samples_for_enzymatic_fragmentation",
+    step_type_y: str = "capture_and_wash",
+    udf_x: str = "artifact_udfs.amount_needed",
+    udf_y: str = "artifact_udfs.library_size_pre_hyb",
+    # group: str = "sample.application",
+) -> list:
+    pipe = [
+        {
+            "$match": {
+                "$or": [
+                    {"step_type": step_type_x},
+                    {"step_type": step_type_y},
+                ],
+                "workflow": workflow,
+            }
+        },
+        {
+            "$project": {
+                "prep_id": 1,
+                "step_type": 1,
+                udf_x: 1,
+                udf_y: 1,
+            }
+        },
+        {
+            "$group": {
+                "_id": {"prep_id": "$prep_id"},
+                "artifact_udfs": {"$push": "$artifact_udfs"},
+                "step_type": {"$push": "$step_type"},
+            }
+        },
+    ]
+    print(pipe)
+    try:
+        return list(adapter.step_collection.aggregate(pipe))
     except:
         return []
