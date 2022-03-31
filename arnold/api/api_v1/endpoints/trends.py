@@ -41,7 +41,12 @@ def get_trends(
 
 @router.get("/trends/sample_fields/over_time")
 def get_sample_field_trends(
-    field: str,
+    field: Literal[
+        "sequenced_to_delivered",
+        "prepped_to_sequenced",
+        "received_to_prepped",
+        "received_to_delivered",
+    ],
     year: int,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
     group: Optional[
