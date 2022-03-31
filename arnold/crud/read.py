@@ -105,6 +105,21 @@ def query_steps(
     return parse_obj_as(List[Step], list(raw_steps))
 
 
+def find_sample_fields(adapter: ArnoldAdapter) -> list[str]:
+    """"""
+
+    pipe = [
+        {"$project": {"arrayofkeyvalue": {"$objectToArray": "$$ROOT"}}},
+        {"$unwind": "$arrayofkeyvalue"},
+        {"$group": {"_id": None, "sample_fields": {"$addToSet": "$arrayofkeyvalue.k"}}},
+    ]
+    try:
+        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        return aggregation_result[0].get("sample_fields")
+    except:
+        return []
+
+
 def find_step_type_udfs(
     adapter: ArnoldAdapter, workflow: str, step_type: str, udf_from: Literal["process", "artifact"]
 ) -> list[str]:
@@ -129,49 +144,93 @@ def find_step_type_udfs(
         return []
 
 
-def query_trend(
+def query_trend_sample_fields(
     adapter: ArnoldAdapter,
     year: int,
-    workflow: str = "TWIST",
-    step_type: str = "aliquot_samples_for_enzymatic_fragmentation",
-    udf: str = "artifact_udfs.amount_needed",
-    group: str = "sample.application",
+    field: str,
+    group: Optional[str],
 ):
-    pipe = [
-        {
-            "$lookup": {
-                "from": "sample",
-                "localField": "sample_id",
-                "foreignField": "_id",
-                "as": "sample",
-            }
-        },
-        {"$unwind": {"path": "$sample"}},
-        {
-            "$match": {
-                "date_run": {"$exists": "True"},
-                "workflow": workflow,
-                "step_type": step_type,
-                udf: {"$exists": "True"},
-                "sample.application": {"$exists": "True"},
-            }
-        },
-        {
-            "$project": {
-                "month": {"$month": "$date_run"},
-                "year": {"$year": "$date_run"},
-                udf: 1,
-                group: 1,
-            }
-        },
-        {"$match": {"year": year}},
-        {
-            "$group": {
-                "_id": {"month": "$month", group.replace(".", "_"): f"${group}"},
-                udf.replace(".", "_"): {"$push": f"${udf}"},
-            }
-        },
-    ]
+
+    match = {
+        "$match": {
+            "received_date": {"$exists": "True"},
+            field: {"$exists": "True"},
+        }
+    }
+    project = {
+        "$project": {
+            "month": {"$month": "$received_date"},
+            "year": {"$year": "$received_date"},
+            field: 1,
+        }
+    }
+    match_year = {"$match": {"year": year}}
+    group_by = {
+        "$group": {
+            "_id": {"month": "$month"},
+            field: {"$push": f"${field}"},
+        }
+    }
+
+    if group:
+        match["$match"][group] = {"$exists": "True"}
+        project["$project"][group] = 1
+        group_by["$group"]["_id"][group] = f"${group}"
+
+    pipe = [match, project, match_year, group_by]
+    try:
+        return list(adapter.sample_collection.aggregate(pipe))
+    except:
+        return []
+
+
+def query_trend_step_fields(
+    adapter: ArnoldAdapter,
+    year: int,
+    workflow: str,
+    step_type: str,
+    field: str,
+    group: Optional[str],
+):
+
+    lookup = {
+        "$lookup": {
+            "from": "sample",
+            "localField": "sample_id",
+            "foreignField": "_id",
+            "as": "sample",
+        }
+    }
+    unwind = {"$unwind": {"path": "$sample"}}
+    match = {
+        "$match": {
+            "date_run": {"$exists": "True"},
+            field: {"$exists": "True"},
+            "workflow": workflow,
+            "step_type": step_type,
+        }
+    }
+    project = {
+        "$project": {
+            "month": {"$month": "$date_run"},
+            "year": {"$year": "$date_run"},
+            field: 1,
+        }
+    }
+    match_year = {"$match": {"year": year}}
+    group_by = {
+        "$group": {
+            "_id": {"month": "$month"},
+            field.replace(".", "_"): {"$push": f"${field}"},
+        }
+    }
+
+    if group:
+        match["$match"][f"sample.{group}"] = {"$exists": "True"}
+        project["$project"][group] = f"$sample.{group}"
+        group_by["$group"]["_id"][group] = f"${group}"
+
+    pipe = [lookup, unwind, match, project, match_year, group_by]
     try:
         return list(adapter.step_collection.aggregate(pipe))
     except:
@@ -213,7 +272,6 @@ def query_compare(
             }
         },
     ]
-    print(pipe)
     try:
         return list(adapter.step_collection.aggregate(pipe))
     except:

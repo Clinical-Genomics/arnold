@@ -14,6 +14,14 @@ LOG = logging.getLogger(__name__)
 router = APIRouter()
 
 
+@router.get("/sample/fields")
+def get_sample_fields(
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+):
+    """G"""
+    return read.find_sample_fields(adapter=adapter)
+
+
 @router.get("/sample/{sample_id}", response_model=Sample)
 def get_sample(
     sample_id: str,
