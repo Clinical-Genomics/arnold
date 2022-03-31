@@ -127,3 +127,88 @@ def find_step_type_udfs(
         return aggregation_result[0].get("all_udfs")
     except:
         return []
+
+
+def query_trend(
+    adapter: ArnoldAdapter,
+    workflow: str = "TWIST",
+    step_type: str = "aliquot_samples_for_enzymatic_fragmentation",
+    udf: str = "artifact_udfs.amount_needed",
+    group: str = "sample.application",
+):
+    pipe = [
+        {
+            "$lookup": {
+                "from": "sample",
+                "localField": "sample_id",
+                "foreignField": "_id",
+                "as": "sample",
+            }
+        },
+        {"$unwind": {"path": "$sample"}},
+        {
+            "$match": {
+                "date_run": {"$exists": "True"},
+                "workflow": workflow,
+                "step_type": step_type,
+                udf: {"$exists": "True"},
+                group: {"$exists": "True"},
+            }
+        },
+        {
+            "$project": {
+                "month": {"$month": "$date_run"},
+                "year": {"$year": "$date_run"},
+                udf: f"${udf}",
+                group: f"${group}",
+            }
+        },
+        {"$match": {"year": 2021}},
+        {
+            "$group": {
+                "_id": {"month": "$month", group: f"${group}"},
+                udf: {"$push": f"${udf}"},
+            }
+        },
+    ]
+
+    pipe = [
+        {
+            "$lookup": {
+                "from": "sample",
+                "localField": "sample_id",
+                "foreignField": "_id",
+                "as": "sample",
+            }
+        },
+        {"$unwind": {"path": "$sample"}},
+        {
+            "$match": {
+                "date_run": {"$exists": "True"},
+                "workflow": workflow,
+                "step_type": step_type,
+                udf: {"$exists": "True"},
+                "sample.application": {"$exists": "True"},
+            }
+        },
+        {
+            "$project": {
+                "month": {"$month": "$date_run"},
+                "year": {"$year": "$date_run"},
+                udf: 1,
+                group: 1,
+            }
+        },
+        {"$match": {"year": 2021}},
+        {
+            "$group": {
+                "_id": {"month": "$month", group.replace(".", "_"): f"${group}"},
+                udf.replace(".", "_"): {"$push": f"${udf}"},
+            }
+        },
+    ]
+    try:
+        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        return aggregation_result
+    except:
+        return []
