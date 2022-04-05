@@ -23,8 +23,8 @@ class Step(BaseModel):
     index_name: Optional[str]
     nr_samples_in_pool: Optional[int]
     date_run: Optional[datetime]
-    artifact_udfs: Optional[dict]
-    process_udfs: Optional[dict]
+    artifact_udfs: Optional[dict] = {}
+    process_udfs: Optional[dict] = {}
 
     class Config:
         allow_population_by_field_name = True
