@@ -142,8 +142,16 @@ def find_step_type_udfs(
         {"$replaceRoot": {"newRoot": f"${udf_from}_udfs"}},
         {"$project": {"arrayofkeyvalue": {"$objectToArray": "$$ROOT"}}},
         {"$unwind": "$arrayofkeyvalue"},
-        {"$group": {"_id": None, "all_udfs": {"$addToSet": "$arrayofkeyvalue.k"}}},
+        {
+            "$project": {
+                "arrayofkeyvalue.udf": "$arrayofkeyvalue.k",
+                "arrayofkeyvalue.type": {"$type": "$arrayofkeyvalue.v"},
+            }
+        },
+        {"$group": {"_id": None, "all_udfs": {"$addToSet": "$arrayofkeyvalue"}}},
     ]
+    print("kjhkjhkjhökjhkjl")
+    print(pipe)
     try:
         aggregation_result = list(adapter.step_collection.aggregate(pipe))
         return aggregation_result[0].get("all_udfs")
