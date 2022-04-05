@@ -101,10 +101,9 @@ def query_steps(
             udf_values=process_udf_value,
         )
         query_pipe += udf_filters
-
     skip, limit = paginate(page_size=page_size, page_num=page_num)
     raw_steps: Iterable[dict] = (
-        adapter.step_collection.find({"$and": query_pipe})
+        adapter.step_collection.find({"$and": query_pipe} if query_pipe else None)
         .sort(sort_key, SORT_TABLE.get(sort_direction))
         .skip(skip)
         .limit(limit)
