@@ -66,16 +66,24 @@ def query_steps(
     No pagination enabled by default.
     """
 
-    query_pipe = [
-        {"workflow": workflow or {"$regex": ".*"}},
-        {"step_type": step_type or {"$regex": ".*"}},
-        {"well_position": well_position or {"$regex": ".*"}},
-        {"artifact_name": artifact_name or {"$regex": ".*"}},
-        {"container_name": container_name or {"$regex": ".*"}},
-        {"container_id": container_id or {"$regex": ".*"}},
-        {"container_type": container_type or {"$regex": ".*"}},
-        {"index_name": index_name or {"$regex": ".*"}},
-    ]
+    query_pipe = []
+    if workflow:
+        query_pipe.append({"workflow": workflow})
+    if step_type:
+        query_pipe.append({"step_type": step_type})
+    if well_position:
+        query_pipe.append({"well_position": well_position})
+    if artifact_name:
+        query_pipe.append({"artifact_name": artifact_name})
+    if container_name:
+        query_pipe.append({"container_name": container_name})
+    if container_id:
+        query_pipe.append({"container_id": container_id})
+    if container_type:
+        query_pipe.append({"container_type": container_type})
+    if index_name:
+        query_pipe.append({"index_name": index_name})
+
     if artifact_udf and artifact_udf_rule:
         udf_filters: list[str] = join_udf_rules(
             udf_type="artifact",
