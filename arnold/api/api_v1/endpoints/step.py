@@ -33,28 +33,20 @@ def get_workflows(adapter: ArnoldAdapter = Depends(get_arnold_adapter)):
     return parse_obj_as(List[WorkflowResponce], workflows)
 
 
-@router.get("/step/step_type/process_udfs")
-def get_step_type_process_udfs(
-    step_type: str,
-    workflow: str,
-    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-):
-    """Get available process udfs for a step type"""
-    return read.find_step_type_udfs(
-        adapter=adapter, step_type=step_type, workflow=workflow, udf_from="process"
-    )
-
-
-@router.get("/step/step_type/artifact_udfs")
-def get_step_type_artifact_udfs(
+@router.get("/step/step_type/udfs")
+def get_step_type_udfs(
     step_type: str,
     workflow: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available artifact udfs for a step type"""
-    return read.find_step_type_udfs(
-        adapter=adapter, step_type=step_type, workflow=workflow, udf_from="artifact"
+    artifact_udfs = read.find_step_type_artifact_udfs(
+        adapter=adapter, step_type=step_type, workflow=workflow
     )
+    process_udfs = read.find_step_type_process_udfs(
+        adapter=adapter, step_type=step_type, workflow=workflow
+    )
+    return artifact_udfs + process_udfs
 
 
 @router.get("/step/{step_id}", response_model=Step)

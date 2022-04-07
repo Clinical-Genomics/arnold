@@ -8,7 +8,13 @@ from arnold.exceptions import MissingResultsError
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
-from arnold.models.responce_models import UDFFilter, StepFiltersBase, Pagination
+from arnold.models.responce_models import (
+    UDFFilter,
+    StepFiltersBase,
+    Pagination,
+    ArtifactUDF,
+    ProcessUDF,
+)
 
 
 def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
@@ -79,12 +85,12 @@ def find_sample_fields(adapter: ArnoldAdapter) -> list[str]:
         return []
 
 
-def find_step_type_udfs(
-    adapter: ArnoldAdapter, workflow: str, step_type: str, udf_from: Literal["process", "artifact"]
-) -> list[str]:
-    """Getting available process or artifact udfs from specific step type within specific workflow"""
+def find_step_type_udfs_pipe(
+    workflow: str, step_type: str, udf_from: Literal["process", "artifact"]
+) -> list[dict]:
+    """"""
 
-    pipe = [
+    return [
         {
             "$match": {
                 "step_type": step_type,
@@ -103,9 +109,29 @@ def find_step_type_udfs(
         {"$group": {"_id": None, "all_udfs": {"$addToSet": "$arrayofkeyvalue"}}},
     ]
 
+
+def find_step_type_artifact_udfs(
+    adapter: ArnoldAdapter, workflow: str, step_type: str
+) -> List[ArtifactUDF]:
+    """Getting available artifact udfs from specific step type within specific workflow"""
+
+    pipe = find_step_type_udfs_pipe(workflow=workflow, step_type=step_type, udf_from="artifact")
     try:
         aggregation_result = list(adapter.step_collection.aggregate(pipe))
-        return aggregation_result[0].get("all_udfs")
+        return parse_obj_as(List[ArtifactUDF], aggregation_result[0].get("all_udfs"))
+    except:
+        return []
+
+
+def find_step_type_process_udfs(
+    adapter: ArnoldAdapter, workflow: str, step_type: str
+) -> List[ProcessUDF]:
+    """Getting available artifact udfs from specific step type within specific workflow"""
+
+    pipe = find_step_type_udfs_pipe(workflow=workflow, step_type=step_type, udf_from="process")
+    try:
+        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        return parse_obj_as(List[ProcessUDF], aggregation_result[0].get("all_udfs"))
     except:
         return []
 

@@ -36,3 +36,21 @@ class Pagination(BaseModel):
 
 class StepFilters(StepFiltersBase, Pagination):
     udf_filters: Optional[list[UDFFilter]] = []
+
+
+class UDF(BaseModel):
+    udf: str
+    type: str
+    udf_type: Optional[Literal["artifact", "process"]]
+
+
+class ArtifactUDF(UDF):
+    udf: str
+    type: str
+    udf_type: str = "artifact"
+
+
+class ProcessUDF(UDF):
+    udf: str
+    type: str
+    udf_type: str = "process"
