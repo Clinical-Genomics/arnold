@@ -17,6 +17,7 @@ class UDFFilter(BaseModel):
 
 
 class StepFiltersBase(BaseModel):
+    sample_id: Optional[str] = None
     well_position: Optional[str] = None
     artifact_name: Optional[str] = None
     container_name: Optional[str] = None
