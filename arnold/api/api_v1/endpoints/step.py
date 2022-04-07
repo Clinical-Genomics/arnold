@@ -84,9 +84,11 @@ def get_steps(
     artifact_udf: Optional[List[str]] = Query(None),
     artifact_udf_rule: Optional[list[str]] = Query(None),
     artifact_udf_value: Optional[list[str]] = Query(None),
+    artifact_udf_query_type: Optional[list[str]] = Query(None),
     process_udf: Optional[list[str]] = Query(None),
     process_udf_rule: Optional[list[str]] = Query(None),
-    process_udf_value: list[Optional[str]] = Query(None),
+    process_udf_value: Optional[list[str]] = Query(None),
+    process_udf_query_type: Optional[list[str]] = Query(None),
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get steps based on filters"""
@@ -111,6 +113,8 @@ def get_steps(
         process_udf=process_udf,
         process_udf_rule=process_udf_rule,
         process_udf_value=process_udf_value,
+        process_udf_query_type=process_udf_query_type,
+        artifact_udf_query_type=artifact_udf_query_type,
     )
     return steps
 
