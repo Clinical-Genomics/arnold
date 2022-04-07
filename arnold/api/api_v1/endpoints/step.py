@@ -11,7 +11,7 @@ from arnold.crud.read import aggregate_step
 from arnold.models.database.step import Step
 import logging
 
-from arnold.models.responce_models import WorkflowResponce
+from arnold.models.responce_models import WorkflowResponce, StepFilters, StepFiltersBase, Pagination
 from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
@@ -67,54 +67,18 @@ def get_step_by_id(
     return step
 
 
-@router.get("/steps/", response_model=List[Step])
+@router.post("/get_steps/", response_model=List[Step])
 def get_steps(
-    page_size: Optional[int] = 5,
-    page_num: Optional[int] = 0,
-    sort_direction: Optional[Literal["ascend", "descend"]] = "descend",
-    sort_key: Optional[str] = "sample_id",
-    well_position: Optional[str] = None,
-    artifact_name: Optional[str] = None,
-    container_name: Optional[str] = None,
-    container_id: Optional[str] = None,
-    container_type: Optional[Literal["96 well plate", "Tube"]] = None,
-    index_name: Optional[str] = None,
-    workflow: Optional[str] = None,
-    step_type: Optional[str] = None,
-    artifact_udf: Optional[List[str]] = Query(None),
-    artifact_udf_rule: Optional[list[str]] = Query(None),
-    artifact_udf_value: Optional[list[str]] = Query(None),
-    artifact_udf_query_type: Optional[list[str]] = Query(None),
-    process_udf: Optional[list[str]] = Query(None),
-    process_udf_rule: Optional[list[str]] = Query(None),
-    process_udf_value: Optional[list[str]] = Query(None),
-    process_udf_query_type: Optional[list[str]] = Query(None),
+    step_filters: StepFilters,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get steps based on filters"""
 
     steps: List[Step] = read.query_steps(
+        step_filters=StepFiltersBase(**step_filters.dict()),
+        pagination=Pagination(**step_filters.dict()),
+        udf_filters=step_filters.udf_filters,
         adapter=adapter,
-        page_size=page_size,
-        page_num=page_num,
-        sort_direction=sort_direction,
-        sort_key=sort_key,
-        well_position=well_position,
-        artifact_name=artifact_name,
-        container_name=container_name,
-        container_id=container_id,
-        container_type=container_type,
-        index_name=index_name,
-        workflow=workflow,
-        step_type=step_type,
-        artifact_udf=artifact_udf,
-        artifact_udf_rule=artifact_udf_rule,
-        artifact_udf_value=artifact_udf_value,
-        process_udf=process_udf,
-        process_udf_rule=process_udf_rule,
-        process_udf_value=process_udf_value,
-        process_udf_query_type=process_udf_query_type,
-        artifact_udf_query_type=artifact_udf_query_type,
     )
     return steps
 

@@ -8,6 +8,7 @@ from arnold.exceptions import MissingResultsError
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
+from arnold.models.responce_models import UDFFilter, StepFiltersBase, Pagination
 
 
 def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
@@ -41,72 +42,25 @@ def find_step(adapter: ArnoldAdapter, step_id: str) -> Optional[Step]:
 
 def query_steps(
     adapter: ArnoldAdapter,
-    workflow: Optional[str] = None,
-    step_type: Optional[str] = None,
-    artifact_udf: Optional[List[str]] = None,
-    artifact_udf_rule: list[Literal["$gt", "$lt", "$eq"]] = None,
-    artifact_udf_value: list[Optional[str]] = None,
-    artifact_udf_query_type: Optional[list[Literal["string", "double", "int"]]] = None,
-    process_udf: list[Optional[str]] = None,
-    process_udf_rule: list[Literal["$gt", "$lt", "$eq"]] = None,
-    process_udf_value: list[Optional[str]] = None,
-    process_udf_query_type: list[Literal["string", "double", "int"]] = None,
-    sort_key: Optional[str] = "sample_id",
-    sort_direction: Optional[Literal["ascend", "descend"]] = "descend",
-    well_position: Optional[str] = None,
-    artifact_name: Optional[str] = None,
-    container_name: Optional[str] = None,
-    container_id: Optional[str] = None,
-    container_type: Optional[Literal["96 well plate", "Tube"]] = None,
-    index_name: Optional[str] = None,
-    page_size: int = 0,
-    page_num: int = 0,
+    step_filters: StepFiltersBase,
+    pagination: Pagination,
+    udf_filters: Optional[list[UDFFilter]],
 ) -> List[Step]:
     """
     Query steps from the sample collection.
     Pagination can be enabled with <page_size> and <page_num> options.
     No pagination enabled by default.
     """
+    query_pipe = [step_filters.dict(exclude_none=True)]
+    query_pipe += join_udf_rules(udf_filters=udf_filters)
 
-    query_pipe = [
-        {"workflow": workflow} if workflow is not None else None,
-        {"step_type": step_type} if step_type is not None else None,
-        {"well_position": well_position} if well_position is not None else None,
-        {"artifact_name": artifact_name} if artifact_name is not None else None,
-        {"container_name": container_name} if container_name is not None else None,
-        {"container_id": container_id} if container_id is not None else None,
-        {"container_type": container_type} if container_type is not None else None,
-        {"index_name": index_name} if index_name is not None else None,
-    ]
-    query_pipe = list(filter(None, query_pipe))
-
-    if artifact_udf and artifact_udf_rule and artifact_udf_query_type:
-        udf_filters: list[str] = join_udf_rules(
-            udf_type="artifact",
-            udf_names=artifact_udf,
-            udf_rules=artifact_udf_rule,
-            udf_values=artifact_udf_value,
-            udf_query_type=artifact_udf_query_type,
-        )
-        query_pipe += udf_filters
-
-    if process_udf and process_udf_rule and process_udf_query_type:
-        udf_filters: list[str] = join_udf_rules(
-            udf_type="process",
-            udf_names=process_udf,
-            udf_rules=process_udf_rule,
-            udf_values=process_udf_value,
-            udf_query_type=process_udf_query_type,
-        )
-        query_pipe += udf_filters
-    skip, limit = paginate(page_size=page_size, page_num=page_num)
+    skip, limit = paginate(page_size=pagination.page_size, page_num=pagination.page_num)
     raw_steps: Iterable[dict] = (
         adapter.step_collection.find({"$and": query_pipe} if query_pipe else None)
-        .sort(sort_key, SORT_TABLE.get(sort_direction))
+        .sort(pagination.sort_key, SORT_TABLE.get(pagination.sort_direction))
         .skip(skip)
         .limit(limit)
     )
-
     return parse_obj_as(List[Step], list(raw_steps))
 
 
@@ -148,8 +102,7 @@ def find_step_type_udfs(
         },
         {"$group": {"_id": None, "all_udfs": {"$addToSet": "$arrayofkeyvalue"}}},
     ]
-    print("kjhkjhkjhökjhkjl")
-    print(pipe)
+
     try:
         aggregation_result = list(adapter.step_collection.aggregate(pipe))
         return aggregation_result[0].get("all_udfs")
