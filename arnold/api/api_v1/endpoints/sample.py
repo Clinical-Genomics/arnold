@@ -18,7 +18,7 @@ router = APIRouter()
 def get_sample_fields(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """G"""
+    """Get sample fields"""
     return read.find_sample_fields(adapter=adapter)
 
 
