@@ -3,12 +3,11 @@ from typing import Optional, List, Literal, Iterable
 from pydantic import parse_obj_as
 
 from arnold.constants import SORT_TABLE
-from arnold.crud.utils import paginate, join_udf_rules
-from arnold.exceptions import MissingResultsError
+from arnold.crud.paginate import paginate
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
-from arnold.models.responce_models import (
+from arnold.models.api_models import (
     UDFFilter,
     StepFiltersBase,
     Pagination,
@@ -46,6 +45,22 @@ def find_step(adapter: ArnoldAdapter, step_id: str) -> Optional[Step]:
     return Step(**raw_step)
 
 
+def join_udf_rules(udf_filters: Optional[list[UDFFilter]]) -> list:
+    """Joining udf rules into query strings"""
+    udf_queries = []
+    for udf_filter in udf_filters:
+        udf_value = udf_filter.udf_value
+        if udf_filter.udf_query_type != "string":
+            try:
+                udf_value = float(udf_filter.udf_value)
+            except:
+                pass
+        udf_queries.append(
+            {f"{udf_filter.udf_type}_udfs.{udf_filter.udf_name}": {udf_filter.udf_rule: udf_value}}
+        )
+    return udf_queries
+
+
 def query_steps(
     adapter: ArnoldAdapter,
     step_filters: StepFiltersBase,
@@ -71,7 +86,7 @@ def query_steps(
 
 
 def find_sample_fields(adapter: ArnoldAdapter) -> list[str]:
-    """"""
+    """Endpoint to get avlible sample fields"""
 
     pipe = [
         {"$project": {"arrayofkeyvalue": {"$objectToArray": "$$ROOT"}}},
@@ -88,7 +103,7 @@ def find_sample_fields(adapter: ArnoldAdapter) -> list[str]:
 def find_step_type_udfs_pipe(
     workflow: str, step_type: str, udf_from: Literal["process", "artifact"]
 ) -> list[dict]:
-    """"""
+    """Finding available udf names and types"""
 
     return [
         {

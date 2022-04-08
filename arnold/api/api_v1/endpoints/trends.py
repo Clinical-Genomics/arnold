@@ -9,6 +9,20 @@ LOG = logging.getLogger(__name__)
 
 router = APIRouter()
 
+GROUP_FIELDS = Literal[
+    "application",
+    "sex",
+    "initial_qc",
+    "library_qc",
+    "prep_method",
+    "bait_set",
+    "capture_kit",
+    "customer",
+    "organism",
+    "priority",
+    "source",
+]
+
 
 @router.get("/trends/step_fields/over_time")
 def get_trends(
@@ -17,23 +31,9 @@ def get_trends(
     step_type: str,
     workflow: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-    group: Optional[
-        Literal[
-            "application",
-            "sex",
-            "initial_qc",
-            "library_qc",
-            "prep_method",
-            "bait_set",
-            "capture_kit",
-            "customer",
-            "organism",
-            "priority",
-            "source",
-        ]
-    ] = Query(None),
+    group: Optional[GROUP_FIELDS] = Query(None),
 ):
-    """"""
+    """Endpoint for trending step udf fields over time. Possible to group by sample fields"""
     return read.query_trend_step_fields(
         adapter=adapter, step_type=step_type, workflow=workflow, field=field, group=group, year=year
     )
@@ -49,23 +49,9 @@ def get_sample_field_trends(
     ],
     year: int,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-    group: Optional[
-        Literal[
-            "application",
-            "sex",
-            "initial_qc",
-            "library_qc",
-            "prep_method",
-            "bait_set",
-            "capture_kit",
-            "customer",
-            "organism",
-            "priority",
-            "source",
-        ]
-    ] = Query(None),
+    group: Optional[GROUP_FIELDS] = Query(None),
 ):
-    """"""
+    """Endpoint for trending turnaround_times (sample udfs) over time. Possible to group by sample fields"""
     return read.query_trend_sample_fields(adapter=adapter, field=field, group=group, year=year)
 
 
@@ -78,7 +64,7 @@ def get_trends(
     step_type_y: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
-    """"""
+    """Endpoint for comparing udfs"""
 
     return read.query_compare(
         adapter=adapter,

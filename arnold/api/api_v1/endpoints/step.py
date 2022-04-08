@@ -1,6 +1,6 @@
-from typing import List, Optional, Literal
+from typing import List
 
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import parse_obj_as
 
@@ -11,7 +11,7 @@ from arnold.crud.read import aggregate_step
 from arnold.models.database.step import Step
 import logging
 
-from arnold.models.responce_models import WorkflowResponce, StepFilters, StepFiltersBase, Pagination
+from arnold.models.api_models import WorkflowResponce, StepFilters, StepFiltersBase, Pagination
 from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
@@ -22,12 +22,14 @@ router = APIRouter()
 @router.get("/step/query_rules")
 def get_query_rules():
     """Get possible filtering rules."""
+
     return QUERY_RULES
 
 
 @router.get("/step/workflows", response_model=list[WorkflowResponce])
 def get_workflows(adapter: ArnoldAdapter = Depends(get_arnold_adapter)):
     """Get available workflows and step types from the step collection"""
+
     pipe = [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
     workflows: list[dict] = aggregate_step(adapter=adapter, pipe=pipe)
     return parse_obj_as(List[WorkflowResponce], workflows)
@@ -40,6 +42,7 @@ def get_step_type_udfs(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get available artifact udfs for a step type"""
+
     artifact_udfs = read.find_step_type_artifact_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow
     )
@@ -55,6 +58,7 @@ def get_step_by_id(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """fetch a step by step id"""
+
     step: Step = read.find_step(step_id=step_id, adapter=adapter)
     return step
 
