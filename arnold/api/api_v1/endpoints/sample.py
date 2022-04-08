@@ -1,6 +1,5 @@
 from arnold.adapter import ArnoldAdapter
 from arnold.crud import create, update, read
-from arnold.crud.read import find_sample
 from arnold.models.database import Sample
 from typing import List
 from fastapi import APIRouter, Depends, status
@@ -12,6 +11,14 @@ from arnold.settings import get_arnold_adapter
 LOG = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+@router.get("/sample/fields")
+def get_sample_fields(
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+):
+    """Get sample fields"""
+    return read.find_sample_fields(adapter=adapter)
 
 
 @router.get("/sample/{sample_id}", response_model=Sample)
@@ -99,4 +106,4 @@ def update_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content=f"Samples inserted to db")
+    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
