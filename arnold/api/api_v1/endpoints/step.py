@@ -7,7 +7,7 @@ from pydantic import parse_obj_as
 from arnold.adapter import ArnoldAdapter
 from arnold.constants import QUERY_RULES
 from arnold.crud import create, update, read
-from arnold.crud.read import aggregate_step
+from arnold.crud.read.step import aggregate_step
 from arnold.models.database.step import Step
 import logging
 
@@ -59,7 +59,7 @@ def get_step_by_id(
 ):
     """fetch a step by step id"""
 
-    step: Step = read.find_step(step_id=step_id, adapter=adapter)
+    step: Step = step.find_step(step_id=step_id, adapter=adapter)
     return step
 
 
@@ -81,7 +81,7 @@ def get_steps(
 
 @router.post("/step/")
 def create_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
-    if read.find_step(step_id=step.step_id, adapter=adapter):
+    if step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="step already in database"
         )
