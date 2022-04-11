@@ -1,11 +1,13 @@
 from arnold.adapter import ArnoldAdapter
-from arnold.crud import create, update, read
+from arnold.crud import create, update
+from arnold.crud.read.sample import find_sample, find_all_samples
+from arnold.crud.read.step import find_sample_fields
 from arnold.models.database import Sample
 from typing import List
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 import logging
-
+import arnold.crud.read.sample
 from arnold.settings import get_arnold_adapter
 
 LOG = logging.getLogger(__name__)
@@ -18,7 +20,7 @@ def get_sample_fields(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get sample fields"""
-    return read.find_sample_fields(adapter=adapter)
+    return find_sample_fields(adapter=adapter)
 
 
 @router.get("/sample/{sample_id}", response_model=Sample)
@@ -27,7 +29,7 @@ def get_sample(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """fetch a sample by sample id"""
-    sample: Sample = read.find_sample(sample_id=sample_id, adapter=adapter)
+    sample: Sample = find_sample(sample_id=sample_id, adapter=adapter)
     return sample
 
 
@@ -36,7 +38,7 @@ def get_samples(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get all samples"""
-    samples: List[Sample] = read.find_all_samples(adapter=adapter)
+    samples: List[Sample] = find_all_samples(adapter=adapter)
 
     return samples
 
@@ -45,7 +47,7 @@ def get_samples(
 def create_sample(
     sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-    if read.find_sample(sample_id=sample.sample_id, adapter=adapter):
+    if arnold.crud.read.sample.find_sample(sample_id=sample.sample_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Sample already in database"
         )
