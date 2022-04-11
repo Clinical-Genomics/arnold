@@ -24,8 +24,8 @@ GROUP_FIELDS = Literal[
 ]
 
 
-@router.get("/trends/step_fields/over_time")
-def get_trends(
+@router.get("/trends/dynamic_udfs_over_time")
+def get_dynamic_udfs_over_time(
     field: str,
     year: int,
     step_type: str,
@@ -39,13 +39,13 @@ def get_trends(
     )
 
 
-@router.get("/trends/sample_fields/over_time")
-def get_sample_field_trends(
+@router.get("/trends/sample_turnaround_times")
+def get_sample_turnaround_times(
     field: Literal[
-        "sequenced_to_delivered",
+        # "sequenced_to_delivered",
         "prepped_to_sequenced",
         "received_to_prepped",
-        "received_to_delivered",
+        # "received_to_delivered",
     ],
     year: int,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
@@ -53,6 +53,16 @@ def get_sample_field_trends(
 ):
     """Endpoint for trending turnaround_times (sample udfs) over time. Possible to group by sample fields"""
     return read.query_trend_sample_fields(adapter=adapter, field=field, group=group, year=year)
+
+
+@router.get("/trends/nr_samples")
+def get_nr_samples_per_month(
+    year: int,
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+    group: Optional[GROUP_FIELDS] = Query(None),
+):
+    """Endpoint for trending turnaround_times (sample udfs) over time. Possible to group by sample fields"""
+    return read.query_nr_samples_per_month(adapter=adapter, group=group, year=year)
 
 
 @router.get("/trends/compare")

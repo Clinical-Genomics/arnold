@@ -16,6 +16,34 @@ from arnold.models.api_models import (
 )
 
 
+def format_plot_data(plot_data: list, trend_field):
+    ordered_plot_data = {"y": [], "x": [], "group": None}
+    for datapoint in plot_data:
+        month = datapoint["_id"]["month"]
+        trend_value = datapoint[trend_field]
+        ordered_plot_data["y"].append(trend_value)
+        ordered_plot_data["x"].append(month)
+        continue
+
+    return [ordered_plot_data]
+
+
+def format_grouped_plot_data(plot_data: list, group_field, trend_field):
+    #  sorted_plot_data = sorted(plot_data, key=lambda d: d["month"])
+    grouped_plottdata = {}
+    for datapoint in plot_data:
+        group = datapoint["_id"][group_field]
+        month = datapoint["_id"]["month"]
+        trend_value = datapoint[trend_field]
+        if group in grouped_plottdata:
+            grouped_plottdata[group]["y"].append(trend_value)
+            grouped_plottdata[group]["x"].append(month)
+            continue
+        grouped_plottdata[group] = {"y": [trend_value], "x": [month], "group": group}
+
+    return [value for group, value in grouped_plottdata.items()]
+
+
 def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
     return list(adapter.step_collection.aggregate(pipe))
 
@@ -178,6 +206,46 @@ def query_trend_sample_fields(
             field: {"$push": f"${field}"},
         }
     }
+    add_average = {"$addFields": {f"average_{field}": {"$avg": f"${field}"}}}
+
+    if group:
+        match["$match"][group] = {"$exists": "True"}
+        project["$project"][group] = 1
+        group_by["$group"]["_id"][group] = f"${group}"
+
+    pipe = [match, project, match_year, group_by, add_average]
+    data = list(adapter.sample_collection.aggregate(pipe))
+    return (
+        format_grouped_plot_data(plot_data=data, group_field=group, trend_field=f"average_{field}")
+        if group
+        else format_plot_data(plot_data=data, trend_field=f"average_{field}")
+    )
+
+
+def query_nr_samples_per_month(
+    adapter: ArnoldAdapter,
+    year: int,
+    group: Optional[str],
+):
+
+    match = {
+        "$match": {
+            "received_date": {"$exists": "True"},
+        }
+    }
+    project = {
+        "$project": {
+            "month": {"$month": "$received_date"},
+            "year": {"$year": "$received_date"},
+        }
+    }
+    match_year = {"$match": {"year": year}}
+    group_by = {
+        "$group": {
+            "_id": {"month": "$month"},
+            "count": {"$sum": 1},
+        }
+    }
 
     if group:
         match["$match"][group] = {"$exists": "True"}
@@ -185,10 +253,12 @@ def query_trend_sample_fields(
         group_by["$group"]["_id"][group] = f"${group}"
 
     pipe = [match, project, match_year, group_by]
-    try:
-        return list(adapter.sample_collection.aggregate(pipe))
-    except:
-        return []
+    data = list(adapter.sample_collection.aggregate(pipe))
+    return (
+        format_grouped_plot_data(plot_data=data, group_field=group, trend_field="count")
+        if group
+        else format_plot_data(plot_data=data, trend_field="count")
+    )
 
 
 def query_trend_step_fields(
@@ -225,11 +295,15 @@ def query_trend_step_fields(
         }
     }
     match_year = {"$match": {"year": year}}
+    field_replaced_dot = field.replace(".", "_")
     group_by = {
         "$group": {
             "_id": {"month": "$month"},
-            field.replace(".", "_"): {"$push": f"${field}"},
+            field_replaced_dot: {"$push": f"${field}"},
         }
+    }
+    add_average = {
+        "$addFields": {f"average_{field_replaced_dot}": {"$avg": f"${field_replaced_dot}"}}
     }
 
     if group:
@@ -237,11 +311,16 @@ def query_trend_step_fields(
         project["$project"][group] = f"$sample.{group}"
         group_by["$group"]["_id"][group] = f"${group}"
 
-    pipe = [lookup, unwind, match, project, match_year, group_by]
-    try:
-        return list(adapter.step_collection.aggregate(pipe))
-    except:
-        return []
+    pipe = [lookup, unwind, match, project, match_year, group_by, add_average]
+
+    data = list(adapter.step_collection.aggregate(pipe))
+    return (
+        format_grouped_plot_data(
+            plot_data=data, group_field=group, trend_field=f"average_{field_replaced_dot}"
+        )
+        if group
+        else format_plot_data(plot_data=data, trend_field=f"average_{field_replaced_dot}")
+    )
 
 
 def query_compare(
