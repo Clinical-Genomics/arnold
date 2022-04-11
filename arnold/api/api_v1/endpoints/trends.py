@@ -1,7 +1,13 @@
-from typing import List, Optional, Literal
+from typing import Optional, Literal
 from fastapi import APIRouter, Depends, Query
+
+from arnold.crud.read.plot import (
+    trend_nr_samples_per_month,
+    trend_turn_around_times,
+    trend_step_fields,
+    compare_step_fields,
+)
 from arnold.adapter import ArnoldAdapter
-from arnold.crud.read import trend
 import logging
 from arnold.settings import get_arnold_adapter
 
@@ -34,7 +40,7 @@ def get_dynamic_udfs_over_time(
     group: Optional[GROUP_FIELDS] = Query(None),
 ):
     """Endpoint for trending step udf fields over time. Possible to group by sample fields"""
-    return trend.query_trend_step_fields(
+    return trend_step_fields(
         adapter=adapter, step_type=step_type, workflow=workflow, field=field, group=group, year=year
     )
 
@@ -52,7 +58,7 @@ def get_sample_turnaround_times(
     group: Optional[GROUP_FIELDS] = Query(None),
 ):
     """Endpoint for trending turnaround_times (sample udfs) over time. Possible to group by sample fields"""
-    return trend.query_trend_sample_fields(adapter=adapter, field=field, group=group, year=year)
+    return trend_turn_around_times(adapter=adapter, field=field, group=group, year=year)
 
 
 @router.get("/trends/nr_samples")
@@ -62,7 +68,7 @@ def get_nr_samples_per_month(
     group: Optional[GROUP_FIELDS] = Query(None),
 ):
     """Endpoint for trending turnaround_times (sample udfs) over time. Possible to group by sample fields"""
-    return trend.query_nr_samples_per_month(adapter=adapter, group=group, year=year)
+    return trend_nr_samples_per_month(adapter=adapter, group=group, year=year)
 
 
 @router.get("/trends/compare")
@@ -76,7 +82,7 @@ def get_trends(
 ):
     """Endpoint for comparing udfs"""
 
-    return trend.query_compare(
+    return compare_step_fields(
         adapter=adapter,
         workflow=workflow,
         udf_x=udf_x,

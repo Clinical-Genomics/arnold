@@ -3,7 +3,7 @@ from typing import Optional, List, Literal, Iterable
 from pydantic import parse_obj_as
 
 from arnold.constants import SORT_TABLE
-from arnold.crud.paginate import paginate
+from arnold.crud.read.paginate import paginate
 from arnold.models.database.step import Step
 from arnold.adapter import ArnoldAdapter
 from arnold.models.api_models import (
