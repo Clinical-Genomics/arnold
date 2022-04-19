@@ -1,5 +1,5 @@
 from typing import Optional, List
-from datetime import date
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -30,27 +30,27 @@ class Lane(BaseModel):
 
 class FlowCell(BaseModel):
     instrument: Optional[str]
-    date: Optional[date]
+    date: Optional[datetime]
     done: Optional[bool]
-    buffer_expiration_date: Optional[date]
+    buffer_expiration_date: Optional[datetime]
     buffer_lot_number: Optional[str]
     buffer_part_number: Optional[str]
     buffer_serial_barcode: Optional[str]
-    flow_cell_expiration_date: Optional[date]
+    flow_cell_expiration_date: Optional[datetime]
     flow_cell_id: Optional[str]
     flow_cell_lot_number: Optional[str]
     flow_cell_mode: Optional[str]
     flow_cell_part_number: Optional[str]
     loading_workflow_type: Optional[str]
     pe_cycle_kit: Optional[str]
-    pe_expiration_date: Optional[date]
+    pe_expiration_date: Optional[datetime]
     pe_lot_number: Optional[str]
     pe_part_number: Optional[str]
     pe_serial_barcode: Optional[str]
     output_folder: Optional[str]
     run_id: Optional[str]
     sbs_cycle_kit: Optional[str]
-    sbs_expiration_date: Optional[date]
+    sbs_expiration_date: Optional[datetime]
     sbs_lot_number: Optional[str]
     sbs_part_number: Optional[str]
     sbs_serial_barcode: Optional[str]
