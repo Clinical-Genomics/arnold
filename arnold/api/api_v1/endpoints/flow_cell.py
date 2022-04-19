@@ -13,14 +13,6 @@ LOG = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/flow_cell/fields")
-def get_flow_cell_fields(
-    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-):
-    """Get flow_cell fields"""
-    return read.find_flow_cell_fields(adapter=adapter)
-
-
 @router.get("/flow_cell/{flow_cell_id}", response_model=FlowCell)
 def get_flow_cell(
     flow_cell_id: str,
@@ -60,50 +52,3 @@ def create_flow_cell(
     return JSONResponse(
         status_code=status.HTTP_200_OK, content=f"flow_cell {flow_cell.flow_cell_id} inserted to db"
     )
-
-
-@router.post("/flow_cells/")
-def create_flow_cells(
-    flow_cells: List[FlowCell], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
-) -> JSONResponse:
-    try:
-        create.create_flow_cells(adapter=adapter, flow_cells=flow_cells)
-    except Exception as e:
-        return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            content=f"exception {e} ",
-        )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="flow_cells inserted to db")
-
-
-@router.put("/flow_cell/")
-def update_flow_cell(
-    flow_cell: FlowCell, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
-) -> JSONResponse:
-
-    try:
-        update.update_flow_cell(adapter=adapter, flow_cell=flow_cell)
-    except Exception as e:
-        return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            content=f"exception {e} ",
-        )
-
-    return JSONResponse(
-        status_code=status.HTTP_200_OK, content=f"flow_cell {flow_cell.flow_cell_id} inserted to db"
-    )
-
-
-@router.put("/flow_cells/")
-def update_flow_cells(
-    flow_cells: List[FlowCell], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
-) -> JSONResponse:
-
-    try:
-        update.update_flow_cells(adapter=adapter, flow_cells=flow_cells)
-    except Exception as e:
-        return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            content=f"exception {e} ",
-        )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="flow_cells inserted to db")

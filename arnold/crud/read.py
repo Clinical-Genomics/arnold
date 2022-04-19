@@ -30,6 +30,12 @@ def find_flow_cell(adapter: ArnoldAdapter, flow_cell_id: str) -> Optional[FlowCe
     return FlowCell(**raw_flow_cell)
 
 
+def find_all_flow_cells(adapter: ArnoldAdapter) -> List[FlowCell]:
+    """Find all flow_cells from the step collection"""
+    raw_flow_cells = adapter.flow_cell_collection.find()
+    return parse_obj_as(List[FlowCell], list(raw_flow_cells))
+
+
 def find_sample(adapter: ArnoldAdapter, sample_id: str) -> Optional[Sample]:
     """Find one sample from the sample collection"""
 

@@ -5,7 +5,7 @@ from arnold.models.database import Sample, Step
 from pymongo.results import InsertManyResult, InsertOneResult
 import logging
 
-from arnold.models.database.flow_cell import Flowcell, FlowCell
+from arnold.models.database.flow_cell import FlowCell
 
 LOG = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def create_sample(adapter: ArnoldAdapter, sample: Sample) -> List[str]:
 def create_flow_cell(adapter: ArnoldAdapter, flow_cell: FlowCell) -> List[str]:
     """Function to create step documents."""
 
-    result: InsertOneResult = adapter.flowcell_collection.insert_one(
+    result: InsertOneResult = adapter.flow_cell_collection.insert_one(
         flow_cell.dict(by_alias=True, exclude_none=True)
     )
     LOG.info("Updating flowcell %s", flow_cell.flow_cell_id)
