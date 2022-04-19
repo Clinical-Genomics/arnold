@@ -4,6 +4,7 @@ from pydantic import parse_obj_as
 
 from arnold.constants import SORT_TABLE
 from arnold.crud.paginate import paginate
+from arnold.models.database.flow_cell import FlowCell
 from arnold.models.database.step import Step
 from arnold.models.database.sample import Sample
 from arnold.adapter import ArnoldAdapter
@@ -18,6 +19,15 @@ from arnold.models.api_models import (
 
 def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
     return list(adapter.step_collection.aggregate(pipe))
+
+
+def find_flow_cell(adapter: ArnoldAdapter, flow_cell_id: str) -> Optional[FlowCell]:
+    """Find one flow_cell from the flow_cell collection"""
+
+    raw_flow_cell = adapter.flow_cell_collection.find_one({"flow_cell_id": flow_cell_id})
+    if not raw_flow_cell:
+        return None
+    return FlowCell(**raw_flow_cell)
 
 
 def find_sample(adapter: ArnoldAdapter, sample_id: str) -> Optional[Sample]:

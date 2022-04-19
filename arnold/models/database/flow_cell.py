@@ -1,0 +1,57 @@
+from typing import Optional, List
+from datetime import date
+
+from pydantic import BaseModel
+
+
+class Lane(BaseModel):
+    ## container_: Optional[float]
+    percent_aligned_r1: Optional[float]
+    percent_aligned_r2: Optional[float]
+    percent_bases_q30_r1: Optional[float]
+    percent_bases_q30_r2: Optional[float]
+    percent_error_rate_r1: Optional[float]
+    percent_error_rate_r2: Optional[float]
+    percent_phasing_r1: Optional[float]
+    percent_prephasing_r1: Optional[float]
+    percent_prephasing_r2: Optional[float]
+    percentpf_r1: Optional[float]
+    percentpf_r2: Optional[float]
+    cluster_density_r1: Optional[float]
+    cluster_density_r2: Optional[float]
+    intensity_cycle_1_r1: Optional[float]
+    intensity_cycle_1_r2: Optional[float]
+    reads_pf_millions_r1: Optional[int]
+    reads_pf_millions_r2: Optional[int]
+    yield_pf_giga_bases_r1: Optional[float]
+    yield_pf_giga_bases_r2: Optional[float]
+    percent_phasing_r2: Optional[float]
+
+
+class FlowCell(BaseModel):
+    instrument: Optional[str]
+    date: Optional[date]
+    done: Optional[bool]
+    buffer_expiration_date: Optional[date]
+    buffer_lot_number: Optional[str]
+    buffer_part_number: Optional[str]
+    buffer_serial_barcode: Optional[str]
+    flow_cell_expiration_date: Optional[date]
+    flow_cell_id: Optional[str]
+    flow_cell_lot_number: Optional[str]
+    flow_cell_mode: Optional[str]
+    flow_cell_part_number: Optional[str]
+    loading_workflow_type: Optional[str]
+    pe_cycle_kit: Optional[str]
+    pe_expiration_date: Optional[date]
+    pe_lot_number: Optional[str]
+    pe_part_number: Optional[str]
+    pe_serial_barcode: Optional[str]
+    output_folder: Optional[str]
+    run_id: Optional[str]
+    sbs_cycle_kit: Optional[str]
+    sbs_expiration_date: Optional[date]
+    sbs_lot_number: Optional[str]
+    sbs_part_number: Optional[str]
+    sbs_serial_barcode: Optional[str]
+    lanes: Optional[List[Lane]]
