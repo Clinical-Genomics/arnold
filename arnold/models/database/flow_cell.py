@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class Lane(BaseModel):
-    ## container_: Optional[float]
+    name: Optional[str]
     percent_aligned_r1: Optional[float]
     percent_aligned_r2: Optional[float]
     percent_bases_q30_r1: Optional[float]
@@ -41,13 +41,11 @@ class FlowCell(BaseModel):
     flow_cell_lot_number: Optional[str]
     flow_cell_mode: Optional[str]
     flow_cell_part_number: Optional[str]
-    loading_workflow_type: Optional[str]
     pe_cycle_kit: Optional[str]
     pe_expiration_date: Optional[datetime]
     pe_lot_number: Optional[str]
     pe_part_number: Optional[str]
     pe_serial_barcode: Optional[str]
-    output_folder: Optional[str]
     run_id: Optional[str]
     sbs_cycle_kit: Optional[str]
     sbs_expiration_date: Optional[datetime]
