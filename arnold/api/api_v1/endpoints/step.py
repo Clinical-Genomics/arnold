@@ -6,13 +6,20 @@ from pydantic import parse_obj_as
 
 from arnold.adapter import ArnoldAdapter
 from arnold.constants import QUERY_RULES
-from arnold.crud import create, update, read
-from arnold.crud.read import aggregate_step
+from arnold.crud import create, update
+from arnold.crud.read.step import (
+    aggregate_step,
+    find_step_type_artifact_udfs,
+    find_step_type_process_udfs,
+    find_step,
+    query_steps,
+)
 from arnold.models.database.step import Step
 import logging
 
 from arnold.models.api_models import WorkflowResponce, StepFilters, StepFiltersBase, Pagination
 from arnold.settings import get_arnold_adapter
+import arnold.crud.read.step
 
 LOG = logging.getLogger(__name__)
 
@@ -43,10 +50,10 @@ def get_step_type_udfs(
 ):
     """Get available artifact udfs for a step type"""
 
-    artifact_udfs = read.find_step_type_artifact_udfs(
+    artifact_udfs = find_step_type_artifact_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow
     )
-    process_udfs = read.find_step_type_process_udfs(
+    process_udfs = find_step_type_process_udfs(
         adapter=adapter, step_type=step_type, workflow=workflow
     )
     return artifact_udfs + process_udfs
@@ -59,7 +66,7 @@ def get_step_by_id(
 ):
     """fetch a step by step id"""
 
-    step: Step = read.find_step(step_id=step_id, adapter=adapter)
+    step: Step = find_step(step_id=step_id, adapter=adapter)
     return step
 
 
@@ -70,7 +77,7 @@ def get_steps(
 ):
     """Get steps based on filters"""
 
-    steps: List[Step] = read.query_steps(
+    steps: List[Step] = query_steps(
         step_filters=StepFiltersBase(**step_filters.dict()),
         pagination=Pagination(**step_filters.dict()),
         udf_filters=step_filters.udf_filters,
@@ -81,7 +88,7 @@ def get_steps(
 
 @router.post("/step/")
 def create_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
-    if read.find_step(step_id=step.step_id, adapter=adapter):
+    if arnold.crud.read.step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="step already in database"
         )

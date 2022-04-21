@@ -26,7 +26,7 @@ def test_post_invalid_sample(fast_app_client, invalid_sample):
 
 def test_post_sample_already_in_db(mocker, fast_app_client, valid_sample):
     # GIVEN that the sample to load is already in the database. Ie, find_sample is True
-    mocker.patch("arnold.crud.read.find_sample", return_value=True)
+    mocker.patch("arnold.crud.read.sample.find_sample", return_value=valid_sample)
 
     # WHEN running the sample request with data
     response = fast_app_client.post("/api/v1/sample/", json=valid_sample.dict())
@@ -38,7 +38,7 @@ def test_post_sample_already_in_db(mocker, fast_app_client, valid_sample):
 
 def test_post_sample_create_sample_failing(mocker, fast_app_client, valid_sample):
     # GIVEN that the sample is not in the database but the create_sample fails
-    mocker.patch("arnold.crud.read.find_sample", return_value=False)
+    mocker.patch("arnold.crud.read.sample.find_sample", return_value=False)
     mocker.patch("arnold.crud.create.create_sample", side_effect=Exception("mocked error"))
 
     # WHEN running the sample request with data
