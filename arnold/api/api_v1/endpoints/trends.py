@@ -35,13 +35,20 @@ def get_dynamic_udfs_over_time(
     field: str,
     year: int,
     step_type: str,
+    udf_type: Literal["artifact_udfs", "process_udfs"],
     workflow: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
     group: Optional[GROUP_FIELDS] = Query(None),
 ):
     """Endpoint for trending step udf fields over time. Possible to group by sample fields"""
     return trend_step_fields(
-        adapter=adapter, step_type=step_type, workflow=workflow, field=field, group=group, year=year
+        adapter=adapter,
+        step_type=step_type,
+        workflow=workflow,
+        field=field,
+        group=group,
+        year=year,
+        udf_type=udf_type,
     )
 
 
