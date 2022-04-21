@@ -13,7 +13,6 @@ from arnold.models.api_models import (
     ArtifactUDF,
     ProcessUDF,
 )
-import arnold.crud.read.sample
 
 
 def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
