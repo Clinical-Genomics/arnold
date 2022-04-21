@@ -41,6 +41,12 @@ def compare_step_fields(
         {"$unwind": {"path": f"${udf_x}"}},
         {"$unwind": {"path": f"${udf_y}"}},
         {
+            "$match": {
+                udf_x: {"$exists": "True"},
+                udf_y: {"$exists": "True"},
+            }
+        },
+        {
             "$group": {
                 "_id": 0,
                 "sample_id": {"$push": "$_id.sample_id"},
