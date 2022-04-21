@@ -76,6 +76,8 @@ def get_trends(
     workflow: str,
     udf_x: str,
     udf_y: str,
+    udf_type_x: Literal["artifact_udfs", "process_udfs"],
+    udf_type_y: Literal["artifact_udfs", "process_udfs"],
     step_type_x: str,
     step_type_y: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
@@ -87,6 +89,8 @@ def get_trends(
         workflow=workflow,
         udf_x=udf_x,
         udf_y=udf_y,
+        udf_type_x=udf_type_x,
+        udf_type_y=udf_type_y,
         step_type_x=step_type_x,
         step_type_y=step_type_y,
     )
