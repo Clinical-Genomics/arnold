@@ -42,7 +42,7 @@ def trend_step_fields(
     group_by = {
         "$group": {
             "_id": {"month": "$month"},
-            field: {"$push": f"${field}"},
+            field: {"$push": f"${udf_type}.{field}"},
         }
     }
     add_average = {"$addFields": {f"average_{field}": {"$avg": f"${field}"}}}
@@ -55,7 +55,6 @@ def trend_step_fields(
     pipe = [lookup, unwind, match, project, match_year, group_by, add_average]
 
     data = list(adapter.step_collection.aggregate(pipe))
-    print(pipe)
     return (
         format_grouped_plot_data(plot_data=data, group_field=group, trend_field=f"average_{field}")
         if group

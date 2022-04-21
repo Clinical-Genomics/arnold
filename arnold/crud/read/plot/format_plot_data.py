@@ -1,11 +1,11 @@
 def format_plot_data(plot_data: list, trend_field):
     """Function to format raw aggregated time series"""
-    ordered_plot_data = {"trend_field": [], "month": [], "group": None}
+    ordered_plot_data = {trend_field: [], "month": [], "group": None}
     for datapoint in plot_data:
         month = datapoint["_id"]["month"]
         trend_value = datapoint[trend_field]
-        ordered_plot_data["y"].append(trend_value)
-        ordered_plot_data["x"].append(month)
+        ordered_plot_data[trend_field].append(trend_value)
+        ordered_plot_data["month"].append(month)
         continue
 
     return [ordered_plot_data]
