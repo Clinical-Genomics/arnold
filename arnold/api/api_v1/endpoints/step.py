@@ -72,15 +72,15 @@ def get_step_by_id(
 
 @router.post("/get_steps/", response_model=List[Step])
 def get_steps(
-    step_filters: StepFilters,
+    pagination: Pagination,
+    step_filters: List[StepFilters],
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get steps based on filters"""
 
     steps: List[Step] = query_steps(
-        step_filters=StepFiltersBase(**step_filters.dict()),
-        pagination=Pagination(**step_filters.dict()),
-        udf_filters=step_filters.udf_filters,
+        step_filters=step_filters,
+        pagination=Pagination(**pagination.dict()),
         adapter=adapter,
     )
     return steps

@@ -12,6 +12,7 @@ from arnold.models.api_models import (
     Pagination,
     ArtifactUDF,
     ProcessUDF,
+    StepFilters,
 )
 
 
@@ -44,28 +45,35 @@ def join_udf_rules(udf_filters: Optional[list[UDFFilter]]) -> list:
         )
     return udf_queries
 
+def merge_step_filter_query_responces(responce_list:list):
+    x= responce_list.pop()
+    for data in responce_list:
 
 def query_steps(
     adapter: ArnoldAdapter,
-    step_filters: StepFiltersBase,
+    step_filters: List[StepFilters],
     pagination: Pagination,
-    udf_filters: Optional[list[UDFFilter]],
 ) -> List[Step]:
     """
     Query steps from the sample collection.
     Pagination can be enabled with <page_size> and <page_num> options.
     No pagination enabled by default.
     """
-    query_pipe = [step_filters.dict(exclude_none=True)]
-    query_pipe += join_udf_rules(udf_filters=udf_filters)
+    for step_filter_raw in step_filters:
 
-    skip, limit = paginate(page_size=pagination.page_size, page_num=pagination.page_num)
-    raw_steps: Iterable[dict] = (
-        adapter.step_collection.find({"$and": query_pipe} if query_pipe else None)
-        .sort(pagination.sort_key, SORT_TABLE.get(pagination.sort_direction))
-        .skip(skip)
-        .limit(limit)
-    )
+        step_filter = StepFiltersBase(**step_filter_raw.dict())
+        udf_filter = step_filter_raw.udf_filters
+
+        query_pipe = [step_filter.dict(exclude_none=True)]
+        query_pipe += join_udf_rules(udf_filters=udf_filter)
+        skip, limit = paginate(page_size=pagination.page_size, page_num=pagination.page_num)
+        raw_steps: Iterable[dict] = (
+            adapter.step_collection.find({"$and": query_pipe} if query_pipe else None)
+            .sort(pagination.sort_key, SORT_TABLE.get(pagination.sort_direction))
+            .skip(skip)
+            .limit(limit)
+        )
+        print(list(raw_steps))
     return parse_obj_as(List[Step], list(raw_steps))
 
 

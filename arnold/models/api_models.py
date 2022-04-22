@@ -35,7 +35,7 @@ class Pagination(BaseModel):
     sort_key: Optional[str] = "sample_id"
 
 
-class StepFilters(StepFiltersBase, Pagination):
+class StepFilters(StepFiltersBase):
     udf_filters: Optional[list[UDFFilter]] = []
 
 
