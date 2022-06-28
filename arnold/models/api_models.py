@@ -1,6 +1,8 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 
 from pydantic import BaseModel, Field
+
+from arnold.models.database import Step
 
 
 class WorkflowResponce(BaseModel):
@@ -35,7 +37,7 @@ class Pagination(BaseModel):
     sort_key: Optional[str] = "sample_id"
 
 
-class StepFilters(StepFiltersBase, Pagination):
+class StepFilters(StepFiltersBase):
     udf_filters: Optional[list[UDFFilter]] = []
 
 
@@ -55,3 +57,8 @@ class ProcessUDF(UDF):
     udf: str
     type: str
     udf_type: str = "process"
+
+
+class SampleSteps(BaseModel):
+    sample_id: str
+    steps: List[Step]

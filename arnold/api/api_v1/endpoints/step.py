@@ -13,11 +13,18 @@ from arnold.crud.read.step import (
     find_step_type_process_udfs,
     find_step,
     query_steps,
+    merge_step_filter_query_responces,
 )
 from arnold.models.database.step import Step
 import logging
 
-from arnold.models.api_models import WorkflowResponce, StepFilters, StepFiltersBase, Pagination
+from arnold.models.api_models import (
+    WorkflowResponce,
+    StepFilters,
+    StepFiltersBase,
+    Pagination,
+    SampleSteps,
+)
 from arnold.settings import get_arnold_adapter
 import arnold.crud.read.step
 
@@ -70,20 +77,21 @@ def get_step_by_id(
     return step
 
 
-@router.post("/get_steps/", response_model=List[Step])
+@router.post("/get_steps/", response_model=List[SampleSteps])
 def get_steps(
-    step_filters: StepFilters,
+    pagination: Pagination,
+    step_filters: List[StepFilters],
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get steps based on filters"""
 
-    steps: List[Step] = query_steps(
-        step_filters=StepFiltersBase(**step_filters.dict()),
-        pagination=Pagination(**step_filters.dict()),
-        udf_filters=step_filters.udf_filters,
+    step_filter_raw_query_responce_dict: dict = query_steps(
+        step_filters=step_filters,
         adapter=adapter,
     )
-    return steps
+    return merge_step_filter_query_responces(
+        responce_dict=step_filter_raw_query_responce_dict, pagination=pagination
+    )
 
 
 @router.post("/step/")

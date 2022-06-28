@@ -12,6 +12,8 @@ from arnold.models.api_models import (
     Pagination,
     ArtifactUDF,
     ProcessUDF,
+    StepFilters,
+    SampleSteps,
 )
 
 
@@ -45,28 +47,61 @@ def join_udf_rules(udf_filters: Optional[list[UDFFilter]]) -> list:
     return udf_queries
 
 
+def merge_step_filter_query_responces(
+    responce_dict: dict, pagination: Pagination
+) -> List[SampleSteps]:
+    """
+    Taking a dict of raw step Responses.
+    Filtering out the sample_ids occurring in all responses.
+    Returning a list of SampleSteps for only those samples."""
+
+    step_types_samples = []
+    intermediate = {}
+    for step_type, step_filter_query_responce_list in responce_dict.items():
+        step_type_samples = set()
+        for step in step_filter_query_responce_list:
+            sample_id = step["sample_id"]
+            step_type_samples.add(sample_id)
+            if sample_id in intermediate:
+                intermediate[sample_id].append(step)
+            else:
+                intermediate[sample_id] = [step]
+        step_types_samples.append(step_type_samples)
+
+    intersection_samples = step_types_samples.pop()
+
+    for step_type_sample in step_types_samples:
+        intersection_samples = intersection_samples.intersection(step_type_sample)
+    intersection_samples = list(intersection_samples)
+    intersection_samples.sort()
+    # add pagination here
+    sample_steps_responce = [
+        {"sample_id": sample, "steps": intermediate[sample]} for sample in intersection_samples
+    ]
+    return parse_obj_as(List[SampleSteps], sample_steps_responce)
+
+
 def query_steps(
     adapter: ArnoldAdapter,
-    step_filters: StepFiltersBase,
-    pagination: Pagination,
-    udf_filters: Optional[list[UDFFilter]],
-) -> List[Step]:
+    step_filters: List[StepFilters],
+) -> dict:
     """
-    Query steps from the sample collection.
-    Pagination can be enabled with <page_size> and <page_num> options.
-    No pagination enabled by default.
+    Query steps from the step collection.
+    Returning a dict of raw query responses
     """
-    query_pipe = [step_filters.dict(exclude_none=True)]
-    query_pipe += join_udf_rules(udf_filters=udf_filters)
+    step_filter_query_responce_dict = {}
+    for step_filter_raw in step_filters:
 
-    skip, limit = paginate(page_size=pagination.page_size, page_num=pagination.page_num)
-    raw_steps: Iterable[dict] = (
-        adapter.step_collection.find({"$and": query_pipe} if query_pipe else None)
-        .sort(pagination.sort_key, SORT_TABLE.get(pagination.sort_direction))
-        .skip(skip)
-        .limit(limit)
-    )
-    return parse_obj_as(List[Step], list(raw_steps))
+        step_filter = StepFiltersBase(**step_filter_raw.dict())
+        udf_filter = step_filter_raw.udf_filters
+
+        query_pipe = [step_filter.dict(exclude_none=True)]
+        query_pipe += join_udf_rules(udf_filters=udf_filter)
+        raw_steps: Iterable[dict] = adapter.step_collection.find(
+            {"$and": query_pipe} if query_pipe else None
+        )
+        step_filter_query_responce_dict[step_filter_raw.step_type] = list(raw_steps)
+    return step_filter_query_responce_dict
 
 
 def find_sample_fields(adapter: ArnoldAdapter) -> list[str]:
