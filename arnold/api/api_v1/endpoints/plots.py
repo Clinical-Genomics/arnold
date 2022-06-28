@@ -33,7 +33,7 @@ def received(
                 "$project": {
                     "received_date": 1,
                     "sample_id": 1,
-                    "apptag_abbr": {"$substr": ["$application", 0, 3]},
+                    "tag": {"$substr": ["$application", 0, 3]},
                     "received_year": {"$year": "$received_date"},
                     "received_month": {"$month": "$received_date"},
                 }
@@ -43,7 +43,7 @@ def received(
                     "_id": {
                         "year": "$received_year",
                         "month": "$received_month",
-                        "apptag_abbr": "$apptag_abbr",
+                        "tag": "$tag",
                     },
                     "count": {"$sum": 1},
                 }
