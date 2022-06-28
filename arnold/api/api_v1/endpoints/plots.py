@@ -18,8 +18,8 @@ router = APIRouter()
 @router.get("/received")
 def received(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
-    date_min: Optional[dt.date] = Field(default=dt.date.min),
-    date_max: Optional[dt.date] = Field(default=dt.date.max),
+    date_min: Optional[dt.date] = dt.date.min,
+    date_max: Optional[dt.date] = dt.date.max,
 ):
     samples = adapter.sample_collection.find(
         [
