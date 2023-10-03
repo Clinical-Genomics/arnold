@@ -1,6 +1,6 @@
 click
 PyYAML
-pydantic
+pydantic<2.0.0
 fastapi
 pandas
 gunicorn
