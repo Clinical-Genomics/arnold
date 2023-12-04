@@ -34,7 +34,9 @@ def update_step(adapter: ArnoldAdapter, step: Step) -> str:
 
     step_id = step.step_id
     result: UpdateResult = adapter.step_collection.update_one(
-        {"_id": step_id}, {"$set": step.dict(by_alias=True, exclude_none=True)}, upsert=True
+        {"_id": step_id},
+        {"$set": step.dict(by_alias=True, exclude_none=True)},
+        upsert=True,
     )
     if result.raw_result.get("updatedExisting"):
         LOG.info("Updated step %s", step_id)

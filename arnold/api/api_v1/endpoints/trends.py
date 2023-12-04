@@ -41,7 +41,12 @@ def get_dynamic_udfs_over_time(
 ):
     """Endpoint for trending step udf fields over time. Possible to group by sample fields"""
     return trend_step_fields(
-        adapter=adapter, step_type=step_type, workflow=workflow, field=field, group=group, year=year
+        adapter=adapter,
+        step_type=step_type,
+        workflow=workflow,
+        field=field,
+        group=group,
+        year=year,
     )
 
 

@@ -49,7 +49,8 @@ def create_sample(
 ) -> JSONResponse:
     if arnold.crud.read.sample.find_sample(sample_id=sample.sample_id, adapter=adapter):
         return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Sample already in database"
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content="Sample already in database",
         )
     try:
         create.create_sample(adapter=adapter, sample=sample)
@@ -60,7 +61,8 @@ def create_sample(
         )
 
     return JSONResponse(
-        status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
+        status_code=status.HTTP_200_OK,
+        content=f"Sample {sample.sample_id} inserted to db",
     )
 
 
@@ -75,7 +77,9 @@ def create_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content="Samples inserted to db"
+    )
 
 
 @router.put("/sample/")
@@ -92,7 +96,8 @@ def update_sample(
         )
 
     return JSONResponse(
-        status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
+        status_code=status.HTTP_200_OK,
+        content=f"Sample {sample.sample_id} inserted to db",
     )
 
 
@@ -108,4 +113,6 @@ def update_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content="Samples inserted to db"
+    )

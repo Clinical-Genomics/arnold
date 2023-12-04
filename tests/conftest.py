@@ -48,7 +48,10 @@ def valid_step():
             "finished_library_concentration_nm": 52.2170488665,
             "finished_library_size": 350,
         },
-        process_udfs={"pcr_instrument_incubation": "Polo", "library_preparation_method": "1464"},
+        process_udfs={
+            "pcr_instrument_incubation": "Polo",
+            "library_preparation_method": "1464",
+        },
     )
 
 

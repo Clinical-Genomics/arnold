@@ -23,6 +23,10 @@ def format_grouped_plot_data(plot_data: list, group_field, trend_field):
             grouped_plottdata[group][trend_field].append(trend_value)
             grouped_plottdata[group]["month"].append(month)
             continue
-        grouped_plottdata[group] = {trend_field: [trend_value], "month": [month], "group": group}
+        grouped_plottdata[group] = {
+            trend_field: [trend_value],
+            "month": [month],
+            "group": group,
+        }
 
     return [value for group, value in grouped_plottdata.items()]

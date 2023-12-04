@@ -17,7 +17,12 @@ from arnold.crud.read.step import (
 from arnold.models.database.step import Step
 import logging
 
-from arnold.models.api_models import WorkflowResponce, StepFilters, StepFiltersBase, Pagination
+from arnold.models.api_models import (
+    WorkflowResponce,
+    StepFilters,
+    StepFiltersBase,
+    Pagination,
+)
 from arnold.settings import get_arnold_adapter
 import arnold.crud.read.step
 
@@ -87,10 +92,13 @@ def get_steps(
 
 
 @router.post("/step/")
-def create_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
+def create_step(
+    step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
     if arnold.crud.read.step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="step already in database"
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content="step already in database",
         )
     try:
         create.create_step(adapter=adapter, step=step)
@@ -120,7 +128,9 @@ def create_steps(
 
 
 @router.put("/step/")
-def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
+def update_step(
+    step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
 
     try:
         update.update_step(adapter=adapter, step=step)
