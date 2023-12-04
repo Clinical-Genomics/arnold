@@ -49,9 +49,7 @@ def trend_step_fields(
         }
     }
     add_average = {
-        "$addFields": {
-            f"average_{field_replaced_dot}": {"$avg": f"${field_replaced_dot}"}
-        }
+        "$addFields": {f"average_{field_replaced_dot}": {"$avg": f"${field_replaced_dot}"}}
     }
 
     if group:
@@ -69,7 +67,5 @@ def trend_step_fields(
             trend_field=f"average_{field_replaced_dot}",
         )
         if group
-        else format_plot_data(
-            plot_data=data, trend_field=f"average_{field_replaced_dot}"
-        )
+        else format_plot_data(plot_data=data, trend_field=f"average_{field_replaced_dot}")
     )

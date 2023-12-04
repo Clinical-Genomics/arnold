@@ -77,9 +77,7 @@ def create_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(
-        status_code=status.HTTP_200_OK, content="Samples inserted to db"
-    )
+    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
 
 
 @router.put("/sample/")
@@ -113,6 +111,4 @@ def update_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(
-        status_code=status.HTTP_200_OK, content="Samples inserted to db"
-    )
+    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")

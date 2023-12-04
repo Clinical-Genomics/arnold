@@ -9,9 +9,7 @@ from arnold.adapter import ArnoldAdapter
 def find_flow_cell(adapter: ArnoldAdapter, flow_cell_id: str) -> Optional[FlowCell]:
     """Find one flow_cell from the flow_cell collection"""
 
-    raw_flow_cell = adapter.flow_cell_collection.find_one(
-        {"flow_cell_id": flow_cell_id}
-    )
+    raw_flow_cell = adapter.flow_cell_collection.find_one({"flow_cell_id": flow_cell_id})
     if not raw_flow_cell:
         return None
     return FlowCell(**raw_flow_cell)

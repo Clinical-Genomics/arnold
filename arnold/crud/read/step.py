@@ -40,11 +40,7 @@ def join_udf_rules(udf_filters: Optional[list[UDFFilter]]) -> list:
             except:
                 pass
         udf_queries.append(
-            {
-                f"{udf_filter.udf_type}_udfs.{udf_filter.udf_name}": {
-                    udf_filter.udf_rule: udf_value
-                }
-            }
+            {f"{udf_filter.udf_type}_udfs.{udf_filter.udf_name}": {udf_filter.udf_rule: udf_value}}
         )
     return udf_queries
 
@@ -118,9 +114,7 @@ def find_step_type_artifact_udfs(
 ) -> List[ArtifactUDF]:
     """Getting available artifact udfs from specific step type within specific workflow"""
 
-    pipe = find_step_type_udfs_pipe(
-        workflow=workflow, step_type=step_type, udf_from="artifact"
-    )
+    pipe = find_step_type_udfs_pipe(workflow=workflow, step_type=step_type, udf_from="artifact")
     try:
         aggregation_result = list(adapter.step_collection.aggregate(pipe))
         return parse_obj_as(List[ArtifactUDF], aggregation_result[0].get("all_udfs"))
@@ -133,9 +127,7 @@ def find_step_type_process_udfs(
 ) -> List[ProcessUDF]:
     """Getting available artifact udfs from specific step type within specific workflow"""
 
-    pipe = find_step_type_udfs_pipe(
-        workflow=workflow, step_type=step_type, udf_from="process"
-    )
+    pipe = find_step_type_udfs_pipe(workflow=workflow, step_type=step_type, udf_from="process")
     try:
         aggregation_result = list(adapter.step_collection.aggregate(pipe))
         return parse_obj_as(List[ProcessUDF], aggregation_result[0].get("all_udfs"))

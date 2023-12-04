@@ -40,9 +40,7 @@ def trend_nr_samples_per_month(
     pipe = [match, project, match_year, group_by]
     data = list(adapter.sample_collection.aggregate(pipe))
     return (
-        format_grouped_plot_data(
-            plot_data=data, group_field=group, trend_field="nr_samples"
-        )
+        format_grouped_plot_data(plot_data=data, group_field=group, trend_field="nr_samples")
         if group
         else format_plot_data(plot_data=data, trend_field="nr_samples")
     )

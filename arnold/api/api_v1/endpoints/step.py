@@ -92,9 +92,7 @@ def get_steps(
 
 
 @router.post("/step/")
-def create_step(
-    step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
-) -> JSONResponse:
+def create_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
     if arnold.crud.read.step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
@@ -128,9 +126,7 @@ def create_steps(
 
 
 @router.put("/step/")
-def update_step(
-    step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
-) -> JSONResponse:
+def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
 
     try:
         update.update_step(adapter=adapter, step=step)
