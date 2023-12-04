@@ -14,6 +14,3 @@ def test_get_step(mocker, fast_app_client, valid_step):
 
     # THEN assert status is ok
     assert response.status_code == status.HTTP_200_OK
-
-
-
