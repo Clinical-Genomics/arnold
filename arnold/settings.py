@@ -1,7 +1,7 @@
 from pathlib import Path
 from pymongo import MongoClient
 
-from pydantic import BaseSettings
+
 
 from arnold.adapter import ArnoldAdapter
 
