@@ -16,7 +16,8 @@ Clone and install:
 ```bash
 git clone https://github.com/Clinical-Genomics/arnold
 cd arnold
-pip install -r requirements.txt -e .
+pip install poetry
+poetry install 
 ```
 
 Create a .env file with the variables `DB_NAME` and `DB_URI`

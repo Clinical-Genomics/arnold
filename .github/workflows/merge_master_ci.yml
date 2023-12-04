@@ -65,7 +65,8 @@ jobs:
 
       - name: Install cg_lims dependencies
         run: |
-          pip install -r requirements.txt -r requirements-dev.txt .
+          pip install poetry
+          poetry install
 
       - name: Install coveralls dependencies
         run: |
