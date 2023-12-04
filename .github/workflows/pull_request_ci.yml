@@ -44,7 +44,7 @@ jobs:
          context: ./
          file: ./Dockerfile
          push: true
-         tags: "clinicalgenomics/arnold-stage:${{steps.get_branch_name.outputs.branch}}, clinicalgenomics/arnold-stage:latest"
+         tags: "clinicalgenomics/arnold-stage:${{steps.get_branch_name.outputs.branch}},clinicalgenomics/arnold-stage:latest"
 
   tests-coverage:
     runs-on: ubuntu-latest
