@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v2
       - uses: psf/black@stable
         with:
-          black_args: ". --check --line-length 100"
+          options: ". --check --line-length 100"
 
   docker-image-push:
     runs-on: ubuntu-latest
