@@ -1,6 +1,6 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bullseye
 
-LABEL base_image="python:3.11-slim"
+LABEL base_image="python:3.11-slim-bullseye"
 LABEL about.home="https://github.com/Clinical-Genomics/arnold"
 LABEL about.tags="CG Core database and API"
 
