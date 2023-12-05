@@ -7,7 +7,7 @@ class Sample(BaseModel):
     """LIMS Sample Collection"""
 
     sample_id: str
-    id: Optional[str] = Field(..., alias="_id", serialization_alias='_id')
+    id: Optional[str] = Field(..., alias="_id")
     ticket: Optional[str] = None
     received_date: Optional[datetime] = None
     delivery_date: Optional[datetime] = None

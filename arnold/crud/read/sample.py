@@ -12,10 +12,10 @@ def find_sample(adapter: ArnoldAdapter, sample_id: str) -> Optional[Sample]:
     raw_sample = adapter.sample_collection.find_one({"_id": sample_id})
     if not raw_sample:
         return None
-    return Sample(**raw_sample)
+    return Sample.model_validate(raw_sample)
 
 
 def find_all_samples(adapter: ArnoldAdapter) -> List[Sample]:
     """Find all samples from the step collection"""
     raw_samples = adapter.sample_collection.find()
-    return [Sample(**raw_sample) for raw_sample in raw_samples]
+    return [Sample.model_validate(raw_sample) for raw_sample in raw_samples]
