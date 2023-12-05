@@ -30,7 +30,7 @@ def fast_app_client():
 @pytest.fixture(scope="function")
 def valid_step():
     return Step(
-        id="ADM1851A3_24-125834_aliquot_samples_for_covaris",
+        _id="ADM1851A3_24-125834_aliquot_samples_for_covaris",
         prep_id="ADM1851A3_24-125834",
         step_type="end_repair",
         sample_id="ADM1851A3",
@@ -60,8 +60,8 @@ def valid_sample():
 @pytest.fixture(scope="function")
 def valid_samples():
     return [
-        Sample(sample_id="some_sample_id", id="some_id").dict(),
-        Sample(sample_id="some_other_sample_id", id="some_other_id").dict(),
+        Sample(sample_id="some_sample_id", id="some_id").model_dump(),
+        Sample(sample_id="some_other_sample_id", id="some_other_id").model_dump(),
     ]
 
 

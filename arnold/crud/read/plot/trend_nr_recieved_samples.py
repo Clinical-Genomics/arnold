@@ -9,7 +9,6 @@ def trend_nr_samples_per_month(
     year: int,
     group: Optional[str],
 ) -> list:
-
     match = {
         "$match": {
             "received_date": {"$exists": "True"},

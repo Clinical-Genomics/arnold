@@ -12,7 +12,6 @@ def trend_step_fields(
     field: str,
     group: Optional[str],
 ) -> list:
-
     lookup = {
         "$lookup": {
             "from": "sample",

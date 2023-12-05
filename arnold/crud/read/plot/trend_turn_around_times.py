@@ -10,7 +10,6 @@ def trend_turn_around_times(
     field: str,
     group: Optional[str],
 ):
-
     match = {
         "$match": {
             "received_date": {"$exists": "True"},
