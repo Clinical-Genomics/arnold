@@ -12,17 +12,17 @@ class Step(BaseModel):
     step_type: str
     sample_id: str
     workflow: str
-    lims_step_name: Optional[str]
+    lims_step_name: Optional[str] = None
     id: str = Field(..., alias="_id")
     step_id: str
-    well_position: Optional[str]
-    artifact_name: Optional[str]
-    container_name: Optional[str]
-    container_id: Optional[str]
-    container_type: Optional[str]
-    index_name: Optional[str]
-    nr_samples_in_pool: Optional[int]
-    date_run: Optional[datetime]
+    well_position: Optional[str] = None
+    artifact_name: Optional[str] = None
+    container_name: Optional[str] = None
+    container_id: Optional[str] = None
+    container_type: Optional[str] = None
+    index_name: Optional[str] = None
+    nr_samples_in_pool: Optional[int] = None
+    date_run: Optional[datetime] = None
     artifact_udfs: Optional[dict] = {}
     process_udfs: Optional[dict] = {}
 

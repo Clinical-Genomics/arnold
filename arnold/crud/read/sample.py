@@ -18,4 +18,4 @@ def find_sample(adapter: ArnoldAdapter, sample_id: str) -> Optional[Sample]:
 def find_all_samples(adapter: ArnoldAdapter) -> List[Sample]:
     """Find all samples from the step collection"""
     raw_samples = adapter.sample_collection.find()
-    return parse_obj_as(List[Sample], list(raw_samples))
+    return [Sample(**raw_sample) for raw_sample in raw_samples]

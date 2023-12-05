@@ -121,7 +121,6 @@ def create_steps(
 
 @router.put("/step/")
 def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
-
     try:
         update.update_step(adapter=adapter, step=step)
     except Exception as e:
@@ -139,7 +138,6 @@ def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 def update_steps(
     steps: List[Step], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-
     try:
         update.update_steps(adapter=adapter, steps=steps)
     except Exception as e:

@@ -6,26 +6,26 @@ from pydantic import BaseModel
 
 class Lane(BaseModel):
     name: Optional[str]
-    percent_aligned_r1: Optional[float]
-    percent_aligned_r2: Optional[float]
-    percent_bases_q30_r1: Optional[float]
-    percent_bases_q30_r2: Optional[float]
-    percent_error_rate_r1: Optional[float]
-    percent_error_rate_r2: Optional[float]
-    percent_phasing_r1: Optional[float]
-    percent_prephasing_r1: Optional[float]
-    percent_prephasing_r2: Optional[float]
-    percentpf_r1: Optional[float]
-    percentpf_r2: Optional[float]
-    cluster_density_r1: Optional[float]
-    cluster_density_r2: Optional[float]
-    intensity_cycle_1_r1: Optional[float]
-    intensity_cycle_1_r2: Optional[float]
-    reads_pf_millions_r1: Optional[int]
-    reads_pf_millions_r2: Optional[int]
-    yield_pf_giga_bases_r1: Optional[float]
-    yield_pf_giga_bases_r2: Optional[float]
-    percent_phasing_r2: Optional[float]
+    percent_aligned_r1: Optional[float] = None
+    percent_aligned_r2: Optional[float] = None
+    percent_bases_q30_r1: Optional[float] = None
+    percent_bases_q30_r2: Optional[float] = None
+    percent_error_rate_r1: Optional[float] = None
+    percent_error_rate_r2: Optional[float] = None
+    percent_phasing_r1: Optional[float] = None
+    percent_prephasing_r1: Optional[float] = None
+    percent_prephasing_r2: Optional[float] = None
+    percentpf_r1: Optional[float] = None
+    percentpf_r2: Optional[float] = None
+    cluster_density_r1: Optional[float] = None
+    cluster_density_r2: Optional[float] = None
+    intensity_cycle_1_r1: Optional[float] = None
+    intensity_cycle_1_r2: Optional[float] = None
+    reads_pf_millions_r1: Optional[int] = None
+    reads_pf_millions_r2: Optional[int] = None
+    yield_pf_giga_bases_r1: Optional[float] = None
+    yield_pf_giga_bases_r2: Optional[float] = None
+    percent_phasing_r2: Optional[float] = None
 
 
 class FlowCell(BaseModel):
