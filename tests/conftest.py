@@ -54,14 +54,14 @@ def valid_step():
 
 @pytest.fixture(scope="function")
 def valid_sample():
-    return Sample(sample_id="some_sample_id", _id="some_id")
+    return Sample(sample_id="some_sample_id", id="some_id")
 
 
 @pytest.fixture(scope="function")
 def valid_samples():
     return [
-        Sample(sample_id="some_sample_id", _id="some_id").model_dump(by_alias=True),
-        Sample(sample_id="some_other_sample_id", _id="some_other_id").model_dump(by_alias=True),
+        Sample(sample_id="some_sample_id", id="some_id").model_dump(),
+        Sample(sample_id="some_other_sample_id", id="some_other_id").model_dump(),
     ]
 
 

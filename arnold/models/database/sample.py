@@ -71,4 +71,4 @@ class Sample(BaseModel):
         return values.get("sample_id")
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
