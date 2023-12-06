@@ -54,5 +54,5 @@ def create_flow_cell(
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content=f"Flow_cell: {flow cell.flow_cell_id} inserted to database",
+        content=f"Flow_cell: {flow_cell.flow_cell_id} inserted to database",
     )

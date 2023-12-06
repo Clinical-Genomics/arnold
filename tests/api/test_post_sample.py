@@ -35,7 +35,7 @@ def test_post_sample_already_in_db(mocker, fast_app_client, valid_sample):
 
     # THEN assert status is 405
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert "Sample already in database" in str(response.content)
+    assert "already in database" in str(response.content)
 
 
 def test_post_sample_create_sample_failing(mocker, fast_app_client, valid_sample):
