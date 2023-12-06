@@ -50,7 +50,7 @@ def create_sample(
     if arnold.crud.read.sample.find_sample(sample_id=sample.sample_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            content="Sample already in database",
+            content=f"Sample: sample.sample_id is already in database",
         )
     try:
         create.create_sample(adapter=adapter, sample=sample)
@@ -62,7 +62,7 @@ def create_sample(
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content=f"Sample {sample.sample_id} inserted to db",
+        content=f"Sample: {sample.sample_id} inserted to database",
     )
 
 
@@ -94,7 +94,7 @@ def update_sample(
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content=f"Sample {sample.sample_id} inserted to db",
+        content=f"Sample: {sample.sample_id} inserted to database",
     )
 
 

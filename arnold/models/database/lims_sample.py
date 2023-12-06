@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class LimsSample(BaseModel):
-    """LIMS Sample Collection"""
+    """LIMS Sample Collection."""
 
     sample_id: str
     id: Optional[str] = Field(..., alias="_id")

@@ -42,7 +42,7 @@ def create_flow_cell(
     if find_flow_cell(flow_cell_id=flow_cell.flow_cell_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            content="flow_cell already in database",
+            content=f"Flow cell: {flow_cell.flow_cell_id} is already in database",
         )
     try:
         create.create_flow_cell(adapter=adapter, flow_cell=flow_cell)
@@ -54,5 +54,5 @@ def create_flow_cell(
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content=f"flow_cell {flow_cell.flow_cell_id} inserted to db",
+        content=f"Flow_cell: {flow cell.flow_cell_id} inserted to database",
     )

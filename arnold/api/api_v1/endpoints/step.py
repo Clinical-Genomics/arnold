@@ -96,7 +96,7 @@ def create_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
     if arnold.crud.read.step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            content="step already in database",
+            content=f"Step: {step.step_id} is already in database",
         )
     try:
         create.create_step(adapter=adapter, step=step)
