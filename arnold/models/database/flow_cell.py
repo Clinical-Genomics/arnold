@@ -50,6 +50,6 @@ class FlowCell(BaseModel):
     sbs_cycle_kit: Optional[str] = None
     sbs_expiration_date: Optional[datetime] = None
     sbs_lot_number: Optional[str] = None
-    sbs_part_number: Optional[str]= None
+    sbs_part_number: Optional[str] = None
     sbs_serial_barcode: Optional[str] = None
     lanes: Optional[List[Lane]] = None

@@ -3,7 +3,7 @@ from pydantic import Field, BaseModel, validator
 from datetime import datetime
 
 
-class Sample(BaseModel):
+class LimsSample(BaseModel):
     """LIMS Sample Collection"""
 
     sample_id: str

@@ -2,13 +2,13 @@ from typing import List
 
 from pymongo.results import UpdateResult
 from arnold.adapter import ArnoldAdapter
-from arnold.models.database import Sample, Step
+from arnold.models.database import LimsSample, Step
 import logging
 
 LOG = logging.getLogger(__name__)
 
 
-def update_sample(adapter: ArnoldAdapter, sample: Sample) -> str:
+def update_sample(adapter: ArnoldAdapter, sample: LimsSample) -> str:
     """Update a sample document in the database"""
 
     sample_id = sample.sample_id
@@ -24,7 +24,7 @@ def update_sample(adapter: ArnoldAdapter, sample: Sample) -> str:
     return result.upserted_id
 
 
-def update_samples(adapter: ArnoldAdapter, samples: List[Sample]) -> List[str]:
+def update_samples(adapter: ArnoldAdapter, samples: List[LimsSample]) -> List[str]:
     """Update sample documents in the database"""
     return [update_sample(adapter=adapter, sample=sample) for sample in samples]
 
@@ -34,7 +34,9 @@ def update_step(adapter: ArnoldAdapter, step: Step) -> str:
 
     step_id = step.step_id
     result: UpdateResult = adapter.step_collection.update_one(
-        {"_id": step_id}, {"$set": step.dict(by_alias=True, exclude_none=True)}, upsert=True
+        {"_id": step_id},
+        {"$set": step.dict(by_alias=True, exclude_none=True)},
+        upsert=True,
     )
     if result.raw_result.get("updatedExisting"):
         LOG.info("Updated step %s", step_id)

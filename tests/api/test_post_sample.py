@@ -2,12 +2,12 @@ from fastapi.testclient import TestClient
 from arnold.api.api_v1.endpoints.sample import router
 from fastapi import status
 
-from arnold.models.database import Sample
+from arnold.models.database import LimsSample
 
 client = TestClient(router)
 
 
-def test_post_valid_sample(fast_app_client: TestClient, valid_sample: Sample):
+def test_post_valid_sample(fast_app_client: TestClient, valid_sample: LimsSample):
     # GIVEN valid sample request data
     # WHEN running the user request with the data
     response = fast_app_client.post("/api/v1/sample/", json=valid_sample.model_dump(by_alias=True))

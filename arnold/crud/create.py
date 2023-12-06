@@ -1,7 +1,7 @@
 from typing import List
 
 from arnold.adapter import ArnoldAdapter
-from arnold.models.database import Sample, Step
+from arnold.models.database import LimsSample, Step
 from pymongo.results import InsertManyResult, InsertOneResult
 import logging
 
@@ -10,7 +10,7 @@ from arnold.models.database.flow_cell import FlowCell
 LOG = logging.getLogger(__name__)
 
 
-def create_samples(adapter: ArnoldAdapter, samples: List[Sample]) -> List[str]:
+def create_samples(adapter: ArnoldAdapter, samples: List[LimsSample]) -> List[str]:
     """Function to create sample documents."""
 
     sample_dicts = [sample.dict(by_alias=True, exclude_none=True) for sample in samples]
@@ -28,7 +28,7 @@ def create_steps(adapter: ArnoldAdapter, steps: List[Step]) -> List[str]:
     return result.inserted_ids
 
 
-def create_sample(adapter: ArnoldAdapter, sample: Sample) -> List[str]:
+def create_sample(adapter: ArnoldAdapter, sample: LimsSample) -> List[str]:
     """Function to create step documents."""
 
     result: InsertOneResult = adapter.sample_collection.insert_one(

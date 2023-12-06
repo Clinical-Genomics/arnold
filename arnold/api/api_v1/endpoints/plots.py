@@ -25,7 +25,11 @@ class ReceivedPlotModel(BaseModel):
     datapoints: List[ReceivedPlotDatapointsModel]
 
 
-@router.get("/received", response_model=List[ReceivedPlotModel], response_model_exclude_none=True)
+@router.get(
+    "/received",
+    response_model=List[ReceivedPlotModel],
+    response_model_exclude_none=True,
+)
 def received(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
     date_min: Optional[dt.date] = dt.date.min,
@@ -53,7 +57,11 @@ def received(
             },
             {
                 "$group": {
-                    "_id": {"tag": "$tag", "year": "$received_year", "month": "$received_month"},
+                    "_id": {
+                        "tag": "$tag",
+                        "year": "$received_year",
+                        "month": "$received_month",
+                    },
                     "total": {"$sum": 1},
                 }
             },
@@ -96,7 +104,11 @@ def received(
     return list(samples)
 
 
-@router.get("/turnaround", response_model=List[ReceivedPlotModel], response_model_exclude_none=True)
+@router.get(
+    "/turnaround",
+    response_model=List[ReceivedPlotModel],
+    response_model_exclude_none=True,
+)
 def turnaround(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
     date_min: Optional[dt.date] = dt.date.min,
@@ -124,7 +136,10 @@ def turnaround(
                     "received_month": {"$month": "$received_date"},
                     "priority": "$priority",
                     "turnaround_time": {
-                        "$divide": [{"$subtract": ["$delivery_date", "$received_date"]}, 86400000]
+                        "$divide": [
+                            {"$subtract": ["$delivery_date", "$received_date"]},
+                            86400000,
+                        ]
                     },
                 }
             },

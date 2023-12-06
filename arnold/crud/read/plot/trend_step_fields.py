@@ -1,7 +1,10 @@
 from typing import Optional
 
 from arnold.adapter import ArnoldAdapter
-from arnold.crud.read.plot.format_plot_data import format_grouped_plot_data, format_plot_data
+from arnold.crud.read.plot.format_plot_data import (
+    format_grouped_plot_data,
+    format_plot_data,
+)
 
 
 def trend_step_fields(
@@ -58,7 +61,9 @@ def trend_step_fields(
     data = list(adapter.step_collection.aggregate(pipe))
     return (
         format_grouped_plot_data(
-            plot_data=data, group_field=group, trend_field=f"average_{field_replaced_dot}"
+            plot_data=data,
+            group_field=group,
+            trend_field=f"average_{field_replaced_dot}",
         )
         if group
         else format_plot_data(plot_data=data, trend_field=f"average_{field_replaced_dot}")

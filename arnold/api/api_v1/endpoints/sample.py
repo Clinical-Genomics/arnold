@@ -2,7 +2,7 @@ from arnold.adapter import ArnoldAdapter
 from arnold.crud import create, update
 from arnold.crud.read.sample import find_sample, find_all_samples
 from arnold.crud.read.step import find_sample_fields
-from arnold.models.database import Sample
+from arnold.models.database import LimsSample
 from typing import List
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
@@ -23,33 +23,34 @@ def get_sample_fields(
     return find_sample_fields(adapter=adapter)
 
 
-@router.get("/sample/{sample_id}", response_model=Sample)
+@router.get("/sample/{sample_id}", response_model=LimsSample)
 def get_sample(
     sample_id: str,
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """fetch a sample by sample id"""
-    sample: Sample = find_sample(sample_id=sample_id, adapter=adapter)
+    sample: LimsSample = find_sample(sample_id=sample_id, adapter=adapter)
     return sample
 
 
-@router.get("/samples/", response_model=List[Sample])
+@router.get("/samples/", response_model=List[LimsSample])
 def get_samples(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get all samples"""
-    samples: List[Sample] = find_all_samples(adapter=adapter)
+    samples: List[LimsSample] = find_all_samples(adapter=adapter)
 
     return samples
 
 
 @router.post("/sample/")
 def create_sample(
-    sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+    sample: LimsSample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
     if arnold.crud.read.sample.find_sample(sample_id=sample.sample_id, adapter=adapter):
         return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content="Sample already in database"
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content="Sample already in database",
         )
     try:
         create.create_sample(adapter=adapter, sample=sample)
@@ -60,13 +61,14 @@ def create_sample(
         )
 
     return JSONResponse(
-        status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
+        status_code=status.HTTP_200_OK,
+        content=f"Sample {sample.sample_id} inserted to db",
     )
 
 
 @router.post("/samples/")
 def create_samples(
-    samples: List[Sample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+    samples: List[LimsSample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
     try:
         create.create_samples(adapter=adapter, samples=samples)
@@ -80,7 +82,7 @@ def create_samples(
 
 @router.put("/sample/")
 def update_sample(
-    sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+    sample: LimsSample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
     try:
         update.update_sample(adapter=adapter, sample=sample)
@@ -91,13 +93,14 @@ def update_sample(
         )
 
     return JSONResponse(
-        status_code=status.HTTP_200_OK, content=f"Sample {sample.sample_id} inserted to db"
+        status_code=status.HTTP_200_OK,
+        content=f"Sample {sample.sample_id} inserted to db",
     )
 
 
 @router.put("/samples/")
 def update_samples(
-    samples: List[Sample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+    samples: List[LimsSample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
     try:
         update.update_samples(adapter=adapter, samples=samples)
