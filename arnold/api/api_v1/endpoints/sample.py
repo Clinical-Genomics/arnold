@@ -82,7 +82,6 @@ def create_samples(
 def update_sample(
     sample: Sample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-
     try:
         update.update_sample(adapter=adapter, sample=sample)
     except Exception as e:
@@ -100,7 +99,6 @@ def update_sample(
 def update_samples(
     samples: List[Sample], adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-
     try:
         update.update_samples(adapter=adapter, samples=samples)
     except Exception as e:
