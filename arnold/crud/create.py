@@ -5,6 +5,7 @@ from arnold.models.database import LimsSample, Step
 from pymongo.results import InsertManyResult, InsertOneResult
 import logging
 
+from arnold.models.database.case import Case
 from arnold.models.database.flow_cell import FlowCell
 
 LOG = logging.getLogger(__name__)
@@ -34,7 +35,7 @@ def create_sample(adapter: ArnoldAdapter, sample: LimsSample) -> List[str]:
     result: InsertOneResult = adapter.sample_collection.insert_one(
         sample.dict(by_alias=True, exclude_none=True)
     )
-    LOG.info("Updating sample %s", sample.sample_id)
+    LOG.info(f"Updating sample {sample.sample_id}")
     return result.inserted_id
 
 
@@ -44,7 +45,7 @@ def create_flow_cell(adapter: ArnoldAdapter, flow_cell: FlowCell) -> List[str]:
     result: InsertOneResult = adapter.flow_cell_collection.insert_one(
         flow_cell.dict(by_alias=True, exclude_none=True)
     )
-    LOG.info("Updating flowcell %s", flow_cell.flow_cell_id)
+    LOG.info(f"Updating flowcell {flow_cell.flow_cell_id}")
     return result.inserted_id
 
 
@@ -54,5 +55,13 @@ def create_step(adapter: ArnoldAdapter, step: Step) -> List[str]:
     result: InsertOneResult = adapter.step_collection.insert_one(
         step.dict(by_alias=True, exclude_none=True)
     )
-    LOG.info("Updating step %s", step.step_id)
+    LOG.info(f"Updating step {step.step_id}")
+    return result.inserted_id
+
+
+def create_case(case: Case, adapter: ArnoldAdapter):
+    """Create a case document in the database."""
+    case_json: dict = case.model_dump()
+    result: InsertOneResult = adapter.case_collection.insert_one(document=case_json)
+    LOG.info(f"Updating case {case.id}")
     return result.inserted_id
