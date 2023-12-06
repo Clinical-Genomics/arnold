@@ -33,7 +33,7 @@ def test_post_step_already_in_db(mocker, fast_app_client, valid_step):
 
     # THEN assert status is 405
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert "step already in database" in str(response.content)
+    assert "already in database" in str(response.content)
 
 
 def test_post_step_create_step_failing(mocker, fast_app_client, valid_step):

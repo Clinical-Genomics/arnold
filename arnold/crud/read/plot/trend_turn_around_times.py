@@ -1,7 +1,10 @@
 from typing import Optional
 
 from arnold.adapter import ArnoldAdapter
-from arnold.crud.read.plot.format_plot_data import format_grouped_plot_data, format_plot_data
+from arnold.crud.read.plot.format_plot_data import (
+    format_grouped_plot_data,
+    format_plot_data,
+)
 
 
 def trend_turn_around_times(

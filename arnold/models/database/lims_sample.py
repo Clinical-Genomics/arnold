@@ -3,8 +3,8 @@ from pydantic import Field, BaseModel, validator
 from datetime import datetime
 
 
-class Sample(BaseModel):
-    """LIMS Sample Collection"""
+class LimsSample(BaseModel):
+    """LIMS Sample Collection."""
 
     sample_id: str
     id: Optional[str] = Field(..., alias="_id")
