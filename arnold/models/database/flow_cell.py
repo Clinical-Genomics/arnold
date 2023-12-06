@@ -29,27 +29,27 @@ class Lane(BaseModel):
 
 
 class FlowCell(BaseModel):
-    instrument: Optional[str]
-    date: Optional[datetime]
-    done: Optional[bool]
-    buffer_expiration_date: Optional[datetime]
-    buffer_lot_number: Optional[str]
-    buffer_part_number: Optional[str]
-    buffer_serial_barcode: Optional[str]
-    flow_cell_expiration_date: Optional[datetime]
-    flow_cell_id: Optional[str]
-    flow_cell_lot_number: Optional[str]
-    flow_cell_mode: Optional[str]
-    flow_cell_part_number: Optional[str]
-    pe_cycle_kit: Optional[str]
-    pe_expiration_date: Optional[datetime]
-    pe_lot_number: Optional[str]
-    pe_part_number: Optional[str]
-    pe_serial_barcode: Optional[str]
-    run_id: Optional[str]
-    sbs_cycle_kit: Optional[str]
-    sbs_expiration_date: Optional[datetime]
-    sbs_lot_number: Optional[str]
-    sbs_part_number: Optional[str]
-    sbs_serial_barcode: Optional[str]
-    lanes: Optional[List[Lane]]
+    instrument: Optional[str] = None
+    date: Optional[datetime] = None
+    done: Optional[bool] = None
+    buffer_expiration_date: Optional[datetime] = None
+    buffer_lot_number: Optional[str] = None
+    buffer_part_number: Optional[str] = None
+    buffer_serial_barcode: Optional[str] = None
+    flow_cell_expiration_date: Optional[datetime] = None
+    flow_cell_id: Optional[str] = None
+    flow_cell_lot_number: Optional[str] = None
+    flow_cell_mode: Optional[str] = None
+    flow_cell_part_number: Optional[str] = None
+    pe_cycle_kit: Optional[str] = None
+    pe_expiration_date: Optional[datetime] = None
+    pe_lot_number: Optional[str] = None
+    pe_part_number: Optional[str] = None
+    pe_serial_barcode: Optional[str] = None
+    run_id: Optional[str] = None
+    sbs_cycle_kit: Optional[str] = None
+    sbs_expiration_date: Optional[datetime] = None
+    sbs_lot_number: Optional[str] = None
+    sbs_part_number: Optional[str]= None
+    sbs_serial_barcode: Optional[str] = None
+    lanes: Optional[List[Lane]] = None
