@@ -1,3 +1,5 @@
+from enum import Enum, StrEnum
+
 import pymongo
 
 

@@ -1,6 +1,6 @@
 from arnold.adapter import ArnoldAdapter
 from arnold.crud import create, update
-from arnold.crud.read.sample import find_sample, find_all_samples
+from arnold.crud.read.sample import get_sample_by_id, get_samples
 from arnold.crud.read.step import find_sample_fields
 from arnold.models.database import LimsSample
 from typing import List
@@ -29,7 +29,7 @@ def get_sample(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """fetch a sample by sample id"""
-    sample: LimsSample = find_sample(sample_id=sample_id, adapter=adapter)
+    sample: LimsSample = get_sample_by_id(sample_id=sample_id, adapter=adapter)
     return sample
 
 
@@ -38,7 +38,7 @@ def get_samples(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get all samples"""
-    samples: List[LimsSample] = find_all_samples(adapter=adapter)
+    samples: List[LimsSample] = get_samples(adapter=adapter)
 
     return samples
 
@@ -47,7 +47,9 @@ def get_samples(
 def create_sample(
     sample: LimsSample, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-    if arnold.crud.read.sample.find_sample(sample_id=sample.sample_id, adapter=adapter):
+    if arnold.crud.read.sample.get_sample_by_id(
+        sample_id=sample.sample_id, adapter=adapter
+    ):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"Sample: sample.sample_id is already in database",
@@ -77,7 +79,9 @@ def create_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content="Samples inserted to db"
+    )
 
 
 @router.put("/sample/")
@@ -109,4 +113,6 @@ def update_samples(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"exception {e} ",
         )
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Samples inserted to db")
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content="Samples inserted to db"
+    )

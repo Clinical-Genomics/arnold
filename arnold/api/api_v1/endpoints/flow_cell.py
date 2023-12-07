@@ -1,5 +1,5 @@
 from arnold.adapter import ArnoldAdapter
-from arnold.crud.read.flow_cell import find_flow_cell, find_all_flow_cells
+from arnold.crud.read.flow_cell import get_flow_cell_by_id, get_all_flow_cells
 
 from arnold.crud import create
 from arnold.models.database.flow_cell import FlowCell
@@ -21,7 +21,9 @@ def get_flow_cell(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """fetch a flow_cell by flow_cell id"""
-    flow_cell: FlowCell = find_flow_cell(flow_cell_id=flow_cell_id, adapter=adapter)
+    flow_cell: FlowCell = get_flow_cell_by_id(
+        flow_cell_id=flow_cell_id, adapter=adapter
+    )
     return flow_cell
 
 
@@ -30,7 +32,7 @@ def get_flow_cells(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ):
     """Get all flow_cells"""
-    flow_cells: List[FlowCell] = find_all_flow_cells(adapter=adapter)
+    flow_cells: List[FlowCell] = get_all_flow_cells(adapter=adapter)
 
     return flow_cells
 
@@ -39,7 +41,7 @@ def get_flow_cells(
 def create_flow_cell(
     flow_cell: FlowCell, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-    if find_flow_cell(flow_cell_id=flow_cell.flow_cell_id, adapter=adapter):
+    if get_flow_cell_by_id(flow_cell_id=flow_cell.flow_cell_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"Flow cell: {flow_cell.flow_cell_id} is already in database",
