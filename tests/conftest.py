@@ -10,16 +10,16 @@ from arnold.settings import get_arnold_adapter
 DATABASE = "testdb"
 
 
-def override_arnold_adapter() -> ArnoldAdapter:
-    """Function for overriding the arnold adapter dependency"""
+@pytest.fixture()
+def mock_adapter() -> ArnoldAdapter:
+    """Return a mock adapter for testing."""
     mongo_client = MongoClient()
     database = mongo_client[DATABASE]
     return ArnoldAdapter(database.client, db_name=DATABASE)
 
 
-@pytest.fixture()
-def mock_adapter() -> ArnoldAdapter:
-    """Return a mock adapter for testing."""
+def override_arnold_adapter() -> ArnoldAdapter:
+    """Function for overriding the arnold adapter dependency"""
     mongo_client = MongoClient()
     database = mongo_client[DATABASE]
     return ArnoldAdapter(database.client, db_name=DATABASE)

@@ -14,7 +14,7 @@ def test_create_case(mock_adapter: ArnoldAdapter, balsamic_case_json: dict):
     create_case(case=case, adapter=mock_adapter)
 
     # THEN a case is added
-    new_case: Case = mock_adapter.case_collection.find_one()
+    new_case: Case = mock_adapter.case_collection.find_one({"id": case.id})
     assert new_case
 
 
