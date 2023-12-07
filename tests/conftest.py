@@ -69,10 +69,18 @@ def valid_sample() -> LimsSample:
 
 
 @pytest.fixture(scope="function")
-def valid_samples() -> list[dict]:
+def valid_samples_dict() -> list[dict]:
     return [
         LimsSample(sample_id="some_sample_id", id="some_id").model_dump(),
         LimsSample(sample_id="some_other_sample_id", id="some_other_id").model_dump(),
+    ]
+
+
+@pytest.fixture(scope="function")
+def valid_samples() -> list[LimsSample]:
+    return [
+        LimsSample(sample_id="some_sample_id", id="some_id"),
+        LimsSample(sample_id="some_other_sample_id", id="some_other_id"),
     ]
 
 
