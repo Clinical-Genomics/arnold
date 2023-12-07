@@ -6,7 +6,10 @@ from arnold.models.database.case import Case
 
 
 def get_case(case_id: str, adapter: ArnoldAdapter) -> Case | None:
-    """Retrieve a case document from the database."""
+    """
+    Retrieve a case document from the database.
+        Raises: ValidationError
+    """
     case: dict = adapter.case_collection.find_one({"id": case_id})
     if not case:
         return None
