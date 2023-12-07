@@ -7,6 +7,7 @@ from arnold.api.api_v1.endpoints import step
 from arnold.api.api_v1.endpoints import trends
 from arnold.api.api_v1.endpoints import flow_cell
 from arnold.api.api_v1.endpoints import plots
+from arnold.api.api_v1.endpoints import case
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -38,3 +39,4 @@ app.include_router(step.router, prefix="/api/v1", tags=["prep"])
 app.include_router(trends.router, prefix="/api/v1", tags=["trends"])
 app.include_router(flow_cell.router, prefix="/api/v1", tags=["flow_cell"])
 app.include_router(plots.router, prefix="/api/v1", tags=["plots"])
+app.include_router(case.router, prefix="/api/v1", tags=["case"])
