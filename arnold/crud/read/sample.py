@@ -1,6 +1,5 @@
 from typing import Optional, List
 
-from pydantic import parse_obj_as
 
 from arnold.adapter import ArnoldAdapter
 from arnold.models.database import LimsSample

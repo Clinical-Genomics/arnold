@@ -18,5 +18,6 @@ class ArnoldAdapter(MongoAdapter):
         self.sample_collection: Collection = self.db.sample
         self.step_collection: Collection = self.db.step
         self.flow_cell_collection: Collection = self.db.flowcell
+        self.case_collection: Collection = self.db.case
 
-        LOG.info("Use database %s.", db_name)
+        LOG.info(f"Use database {db_name}.")

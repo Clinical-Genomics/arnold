@@ -10,16 +10,23 @@ from arnold.settings import get_arnold_adapter
 DATABASE = "testdb"
 
 
-def override_arnold_adapter():
-    """Function for overriding the arnold adapter dependency"""
+@pytest.fixture()
+def mock_adapter() -> ArnoldAdapter:
+    """Return a mock adapter for testing."""
+    mongo_client = MongoClient()
+    database = mongo_client[DATABASE]
+    return ArnoldAdapter(database.client, db_name=DATABASE)
 
+
+def override_arnold_adapter() -> ArnoldAdapter:
+    """Function for overriding the arnold adapter dependency"""
     mongo_client = MongoClient()
     database = mongo_client[DATABASE]
     return ArnoldAdapter(database.client, db_name=DATABASE)
 
 
 @pytest.fixture()
-def fast_app_client():
+def fast_app_client() -> TestClient:
     """Return a mock fastapi app"""
 
     client = TestClient(app)
@@ -28,7 +35,7 @@ def fast_app_client():
 
 
 @pytest.fixture(scope="function")
-def valid_step():
+def valid_step() -> Step:
     return Step(
         _id="ADM1851A3_24-125834_aliquot_samples_for_covaris",
         prep_id="ADM1851A3_24-125834",
@@ -56,12 +63,12 @@ def valid_step():
 
 
 @pytest.fixture(scope="function")
-def valid_sample():
+def valid_sample() -> LimsSample:
     return LimsSample(sample_id="some_sample_id", id="some_id")
 
 
 @pytest.fixture(scope="function")
-def valid_samples():
+def valid_samples() -> list[dict]:
     return [
         LimsSample(sample_id="some_sample_id", id="some_id").model_dump(),
         LimsSample(sample_id="some_other_sample_id", id="some_other_id").model_dump(),
@@ -69,7 +76,7 @@ def valid_samples():
 
 
 @pytest.fixture(scope="function")
-def invalid_samples():
+def invalid_samples() -> list[dict]:
     return [
         dict(id="some_id"),
         dict(sample_id="some_other_sample_id", id="some_other_id"),
@@ -77,12 +84,12 @@ def invalid_samples():
 
 
 @pytest.fixture(scope="function")
-def invalid_sample():
+def invalid_sample() -> dict:
     return dict(sample_id="some_sample_id")
 
 
 @pytest.fixture(scope="function")
-def invalid_step():
+def invalid_step() -> dict:
     return dict(
         step_type="end_repair",
         sample_id="ADM1851A3",
