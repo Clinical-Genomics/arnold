@@ -27,7 +27,7 @@ def test_get_sample_by_id(mock_adapter: ArnoldAdapter, valid_sample: LimsSample)
         mock_adapter, sample_id=valid_sample.sample_id
     )
     # THEN a sample is returned
-    assert sample
+    assert isinstance(sample, LimsSample)
     assert sample.id == valid_sample.sample_id
 
 
@@ -42,3 +42,5 @@ def test_get_samples(mock_adapter: ArnoldAdapter, valid_samples):
 
     # THEN all samples are returned
     assert len(samples) == len(valid_samples)
+    for sample in samples:
+        assert isinstance(sample, LimsSample)

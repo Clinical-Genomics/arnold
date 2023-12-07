@@ -28,17 +28,18 @@ def test_get_flow_cell_by_flow_cell_id(
     create_flow_cell(adapter=mock_adapter, flow_cell=valid_flow_cell)
 
     # THEN a flow cell can be returned
-    new_flow_cell = get_flow_cell_by_id(
+    new_flow_cell: FlowCell = get_flow_cell_by_id(
         adapter=mock_adapter, flow_cell_id=valid_flow_cell.flow_cell_id
     )
     assert new_flow_cell
+    assert isinstance(new_flow_cell, FlowCell)
 
 
 def test_get_all_flow_cells(mock_adapter: ArnoldAdapter, valid_flow_cell: FlowCell):
     """Test to get all flow cells from the database."""
     # GIVEN a database with multiple flow cells
     create_flow_cell(adapter=mock_adapter, flow_cell=valid_flow_cell)
-    another_flow_cell = valid_flow_cell
+    another_flow_cell: FlowCell = valid_flow_cell
     another_flow_cell.flow_cell_id = "FlowCell2"
     create_flow_cell(adapter=mock_adapter, flow_cell=another_flow_cell)
 
@@ -47,3 +48,5 @@ def test_get_all_flow_cells(mock_adapter: ArnoldAdapter, valid_flow_cell: FlowCe
 
     # THEN all flow cells are returned
     assert len(flow_cells) == 2
+    for flow_cell in flow_cells:
+        assert isinstance(flow_cell, FlowCell)

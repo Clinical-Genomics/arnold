@@ -7,7 +7,9 @@ from arnold.models.database import LimsSample
 
 def get_sample_by_id(adapter: ArnoldAdapter, sample_id: str) -> Optional[LimsSample]:
     """Find one sample from the sample collection."""
-    raw_sample = adapter.sample_collection.find_one({"sample_id": sample_id})
+    raw_sample: LimsSample = adapter.sample_collection.find_one(
+        {"sample_id": sample_id}
+    )
     if not raw_sample:
         return None
     return LimsSample.model_validate(raw_sample)
