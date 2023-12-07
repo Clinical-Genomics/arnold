@@ -39,12 +39,13 @@ def get_query_rules():
 
 
 @router.get("/step/workflows", response_model=list[WorkflowResponce])
-def get_workflows(adapter: ArnoldAdapter = Depends(get_arnold_adapter)):
-    """Get available workflows and step types from the step collection"""
-
+def get_workflows(
+    adapter: ArnoldAdapter = Depends(get_arnold_adapter),
+) -> list[WorkflowResponce]:
+    """Get available workflows and step types from the step collection."""
     pipe = [{"$group": {"_id": "$workflow", "step_types": {"$addToSet": "$step_type"}}}]
     workflows: list[dict] = aggregate_step(adapter=adapter, pipe=pipe)
-    return parse_obj_as(List[WorkflowResponce], workflows)
+    return [WorkflowResponce.model_validate(workflow) for workflow in workflows]
 
 
 @router.get("/step/step_type/udfs")
@@ -83,8 +84,8 @@ def get_steps(
     """Get steps based on filters"""
 
     steps: List[Step] = query_steps(
-        step_filters=StepFiltersBase(**step_filters.dict()),
-        pagination=Pagination(**step_filters.dict()),
+        step_filters=StepFiltersBase.model_validate(step_filters.model_dump()),
+        pagination=Pagination.model_validate(step_filters.model_dump()),
         udf_filters=step_filters.udf_filters,
         adapter=adapter,
     )
@@ -92,7 +93,9 @@ def get_steps(
 
 
 @router.post("/step/")
-def create_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
+def create_step(
+    step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
     if arnold.crud.read.step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
@@ -126,7 +129,9 @@ def create_steps(
 
 
 @router.put("/step/")
-def update_step(step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)) -> JSONResponse:
+def update_step(
+    step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
+) -> JSONResponse:
     try:
         update.update_step(adapter=adapter, step=step)
     except Exception as e:
