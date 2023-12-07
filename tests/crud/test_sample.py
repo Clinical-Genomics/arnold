@@ -13,9 +13,11 @@ def test_create_sample(mock_adapter: ArnoldAdapter, valid_sample: LimsSample):
     create_sample(adapter=mock_adapter, sample=valid_sample)
 
     # THEN the sample can be returned from the database
-    assert mock_adapter.sample_collection.find_one(
+    sample: dict = mock_adapter.sample_collection.find_one(
         {"sample_id": valid_sample.sample_id}
     )
+    assert sample
+    assert isinstance(sample, dict)
 
 
 def test_get_sample_by_id(mock_adapter: ArnoldAdapter, valid_sample: LimsSample):
