@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class Lane(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     percent_aligned_r1: Optional[float] = None
     percent_aligned_r2: Optional[float] = None
     percent_bases_q30_r1: Optional[float] = None

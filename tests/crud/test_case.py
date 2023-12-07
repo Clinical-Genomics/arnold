@@ -1,4 +1,4 @@
-"""Tests for the CRUD module."""
+"""Tests for the CRUD module for cases."""
 from arnold.adapter import ArnoldAdapter
 from arnold.crud.create import create_case
 from arnold.crud.read.case import get_case

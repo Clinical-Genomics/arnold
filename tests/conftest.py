@@ -5,6 +5,7 @@ import pytest
 from mongomock import MongoClient
 from fastapi.testclient import TestClient
 
+from arnold.models.database.flow_cell import FlowCell
 from arnold.settings import get_arnold_adapter
 
 DATABASE = "testdb"
@@ -101,6 +102,54 @@ def invalid_step() -> dict:
         container_name="test",
         container_id="27-85769",
     )
+
+
+@pytest.fixture()
+def valid_flow_cell_dict() -> dict:
+    return {
+        "instrument": "Instrument123",
+        "date": "2023-12-07T08:30:00",
+        "done": True,
+        "buffer_expiration_date": "2023-12-15T12:00:00",
+        "buffer_lot_number": "BufferLot123",
+        "buffer_part_number": "BufferPart456",
+        "buffer_serial_barcode": "BufferBarcode789",
+        "flow_cell_expiration_date": "2023-12-20T15:45:00",
+        "flow_cell_id": "FlowCellID001",
+        "flow_cell_lot_number": "FlowCellLot789",
+        "flow_cell_mode": "Normal",
+        "flow_cell_part_number": "FlowCellPart555",
+        "pe_cycle_kit": "PECycleKit123",
+        "pe_expiration_date": "2023-12-25T18:30:00",
+        "pe_lot_number": "PELot456",
+        "pe_part_number": "PEPart789",
+        "pe_serial_barcode": "PEBarcode001",
+        "run_id": "RunID789",
+        "sbs_cycle_kit": "SBSCycleKit555",
+        "sbs_expiration_date": "2023-12-30T21:15:00",
+        "sbs_lot_number": "SBSLot789",
+        "sbs_part_number": "SBSPart123",
+        "sbs_serial_barcode": "SBSBarcode555",
+        "lanes": [
+            {
+                "name": "lane_1",
+                "sample_id": "Sample001",
+                "sample_type": "DNA",
+                "barcode": "Barcode123",
+            },
+            {
+                "name": "lane_2",
+                "sample_id": "Sample002",
+                "sample_type": "RNA",
+                "barcode": "Barcode456",
+            },
+        ],
+    }
+
+
+@pytest.fixture()
+def valid_flow_cell(valid_flow_cell_dict) -> FlowCell:
+    return FlowCell.model_validate(valid_flow_cell_dict)
 
 
 @pytest.fixture

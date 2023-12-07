@@ -1,13 +1,14 @@
 from typing import Optional, List
 
-from pydantic import parse_obj_as
 
 from arnold.models.database.flow_cell import FlowCell
 from arnold.adapter import ArnoldAdapter
 
 
-def find_flow_cell(adapter: ArnoldAdapter, flow_cell_id: str) -> Optional[FlowCell]:
-    """Find one flow_cell from the flow_cell collection."""
+def get_flow_cell_by_id(
+    adapter: ArnoldAdapter, flow_cell_id: str
+) -> Optional[FlowCell]:
+    """Return a flow cell by flow cell id."""
 
     raw_flow_cell = adapter.flow_cell_collection.find_one(
         {"flow_cell_id": flow_cell_id}
@@ -17,7 +18,7 @@ def find_flow_cell(adapter: ArnoldAdapter, flow_cell_id: str) -> Optional[FlowCe
     return FlowCell.model_validate(raw_flow_cell)
 
 
-def find_all_flow_cells(adapter: ArnoldAdapter) -> List[FlowCell]:
-    """Find all flow_cells from the step collection."""
+def get_all_flow_cells(adapter: ArnoldAdapter) -> List[FlowCell]:
+    """Get all flow cells from the flow cell collection."""
     raw_flow_cells = adapter.flow_cell_collection.find()
     return [FlowCell.model_validate(flow_cell) for flow_cell in raw_flow_cells]
