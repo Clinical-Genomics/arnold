@@ -22,7 +22,7 @@ def create_case(
     """Create a case document in the database."""
     if read.case.get_case(case_id=case.id, adapter=adapter):
         return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            status_code=status.HTTP_409_CONFLICT,
             content="Case already in database.",
         )
     try:
@@ -44,6 +44,13 @@ def create_case(
 )
 def get_case(
     case_id: str, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
-) -> Case:
+) -> Case | JSONResponse:
     """Retrieve a case document from the database."""
-    return read.case.get_case(case_id=case_id, adapter=adapter)
+    try:
+        case: Case = read.case.get_case(case_id=case_id, adapter=adapter)
+        return case
+    except Exception as error:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=f"Could not find entry with {case_id} in database. {error}",
+        )
