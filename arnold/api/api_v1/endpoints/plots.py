@@ -4,8 +4,7 @@ from pydantic import BaseModel
 
 from arnold.adapter import ArnoldAdapter
 
-from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends
 import logging
 from arnold.settings import get_arnold_adapter
 
