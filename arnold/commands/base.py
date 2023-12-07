@@ -25,11 +25,13 @@ def cli(context: click.Context):
 
 
 @cli.command(name="serve")
-@click.option("--version", default="v1", type=click.Choice(["v1", "v2"]), show_default=True)
+@click.option(
+    "--version", default="v1", type=click.Choice(["v1", "v2"]), show_default=True
+)
 @click.option("--reload", is_flag=True)
 def serve_command(reload: bool, version: str):
     """Serve the arnold app for testing purpose."""
 
     app = f"arnold.api.api_{version}.api:app"
-    LOG.info("Running on host:%s and port:%s", settings.host, settings.port)
+    LOG.info(f"Running on host:{settings.host} and port:{settings.port}")
     uvicorn.run(app=app, host=settings.host, port=settings.port, reload=reload)
