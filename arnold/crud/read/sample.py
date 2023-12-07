@@ -14,6 +14,6 @@ def get_sample_by_id(adapter: ArnoldAdapter, sample_id: str) -> Optional[LimsSam
 
 
 def get_samples(adapter: ArnoldAdapter) -> List[LimsSample]:
-    """Find all samples from the step collection."""
+    """Return all samples from the step collection."""
     raw_samples = adapter.sample_collection.find()
     return [LimsSample.model_validate(raw_sample) for raw_sample in raw_samples]
