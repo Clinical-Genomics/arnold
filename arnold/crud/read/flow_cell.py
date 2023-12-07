@@ -19,6 +19,6 @@ def get_flow_cell_by_id(
 
 
 def get_all_flow_cells(adapter: ArnoldAdapter) -> List[FlowCell]:
-    """Get all flow cells from the flow cell collection."""
+    """Return all flow cells from the flow cell collection."""
     raw_flow_cells = adapter.flow_cell_collection.find()
     return [FlowCell.model_validate(flow_cell) for flow_cell in raw_flow_cells]
