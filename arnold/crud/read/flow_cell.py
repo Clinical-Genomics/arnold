@@ -10,7 +10,7 @@ def get_flow_cell_by_id(
 ) -> Optional[FlowCell]:
     """Return a flow cell by flow cell id."""
 
-    raw_flow_cell = adapter.flow_cell_collection.find_one(
+    raw_flow_cell: FlowCell = adapter.flow_cell_collection.find_one(
         {"flow_cell_id": flow_cell_id}
     )
     if not raw_flow_cell:
