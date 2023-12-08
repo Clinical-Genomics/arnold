@@ -11,7 +11,7 @@ from arnold.crud.read.step import (
     aggregate_step,
     find_step_type_artifact_udfs,
     find_step_type_process_udfs,
-    get_step,
+    find_step,
     query_steps,
 )
 from arnold.models.database.step import Step
@@ -72,7 +72,7 @@ def get_step_by_id(
 ):
     """fetch a step by step id"""
 
-    step: Step = get_step(step_id=step_id, adapter=adapter)
+    step: Step = find_step(step_id=step_id, adapter=adapter)
     return step
 
 
@@ -96,7 +96,7 @@ def get_steps(
 def create_step(
     step: Step, adapter: ArnoldAdapter = Depends(get_arnold_adapter)
 ) -> JSONResponse:
-    if arnold.crud.read.step.get_step(step_id=step.step_id, adapter=adapter):
+    if arnold.crud.read.step.find_step(step_id=step.step_id, adapter=adapter):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content=f"Step: {step.step_id} is already in database",
