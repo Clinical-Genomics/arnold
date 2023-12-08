@@ -18,10 +18,10 @@ def aggregate_step(adapter: ArnoldAdapter, pipe: list) -> List:
     return list(adapter.step_collection.aggregate(pipe))
 
 
-def find_step(adapter: ArnoldAdapter, step_id: str) -> Optional[Step]:
-    """Find one step from the step collection"""
+def get_step(adapter: ArnoldAdapter, step_id: str) -> Optional[Step]:
+    """Return one step from the step collection"""
 
-    raw_step = adapter.step_collection.find_one({"_id": step_id})
+    raw_step = adapter.step_collection.find_one({"step_id": step_id})
     if not raw_step:
         return None
 
@@ -75,13 +75,15 @@ def query_steps(
 def find_sample_fields(adapter: ArnoldAdapter) -> list[str]:
     """Endpoint to get available sample fields."""
 
-    pipe = [
+    sample_fields_pipeline: list[dict] = [
         {"$project": {"arrayofkeyvalue": {"$objectToArray": "$$ROOT"}}},
         {"$unwind": "$arrayofkeyvalue"},
         {"$group": {"_id": None, "sample_fields": {"$addToSet": "$arrayofkeyvalue.k"}}},
     ]
     try:
-        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        aggregation_result = list(
+            adapter.step_collection.aggregate(sample_fields_pipeline)
+        )
         return aggregation_result[0].get("sample_fields")
     except:
         return []
@@ -117,11 +119,13 @@ def find_step_type_artifact_udfs(
 ) -> List[ArtifactUDF]:
     """Getting available artifact udfs from specific step type within specific workflow."""
 
-    pipe = find_step_type_udfs_pipe(
+    artifact_udfs_pipeline: list[dict] = find_step_type_udfs_pipe(
         workflow=workflow, step_type=step_type, udf_from="artifact"
     )
     try:
-        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        aggregation_result = list(
+            adapter.step_collection.aggregate(artifact_udfs_pipeline)
+        )
         return [
             ArtifactUDF.model_validate(artifact_udf)
             for artifact_udf in aggregation_result[0].get("all_udfs")
@@ -135,11 +139,13 @@ def find_step_type_process_udfs(
 ) -> List[ProcessUDF]:
     """Getting available artifact udfs from specific step type within specific workflow."""
 
-    pipe = find_step_type_udfs_pipe(
+    process_udfs_pipeline: list[dict] = find_step_type_udfs_pipe(
         workflow=workflow, step_type=step_type, udf_from="process"
     )
     try:
-        aggregation_result = list(adapter.step_collection.aggregate(pipe))
+        aggregation_result = list(
+            adapter.step_collection.aggregate(process_udfs_pipeline)
+        )
         return [
             ProcessUDF.model_validate(process_udf)
             for process_udf in aggregation_result[0].get("all_udfs")
