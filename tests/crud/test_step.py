@@ -16,6 +16,7 @@ def test_create_step(valid_step: Step, mock_adapter: ArnoldAdapter):
     step: dict = mock_adapter.step_collection.find_one({"prep_id": valid_step.prep_id})
     assert step
     assert isinstance(step, dict)
+    assert Step.model_validate(step).prep_id == valid_step.prep_id
 
 
 def test_get_step(valid_step: Step, mock_adapter: ArnoldAdapter):
