@@ -14,8 +14,8 @@ router = APIRouter()
 
 
 class ReceivedPlotDatapointsModel(BaseModel):
-    tag: Optional[str]
-    priority: Optional[str]
+    tag: Optional[str] = None
+    priority: Optional[str] = None
     total: int
 
 
