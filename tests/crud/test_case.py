@@ -2,7 +2,7 @@
 from arnold.adapter import ArnoldAdapter
 from arnold.crud.create import create_case
 from arnold.crud.read.case import get_case
-from arnold.models.database.case import Case
+from arnold.models.database.case.case import Case
 
 
 def test_create_case(mock_adapter: ArnoldAdapter, balsamic_case_json: dict):

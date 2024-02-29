@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from arnold.crud import create, read
 from arnold.adapter.plugin import ArnoldAdapter
 from arnold.settings import get_arnold_adapter
-from arnold.models.database.case import Case
+from arnold.models.database.case.case import Case
 
 router = APIRouter()
 

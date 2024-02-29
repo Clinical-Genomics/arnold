@@ -1,0 +1,424 @@
+"""Models for the MultiQC data."""
+
+from pydantic import BaseModel
+
+
+class PicardDuplicates(BaseModel):
+    unpaired_reads_examined: float
+    read_pairs_examined: float
+    secondary_or_supplementary_reads: float
+    unmapped_reads: float
+    unpaired_read_duplicates: float
+    read_pair_duplicates: float
+    read_pair_optical_duplicates: float
+
+    percent_duplication: float
+    estimated_library_size: float
+
+
+class PicardInsertSize(BaseModel):
+    median_insert_size: float
+    mode_insert_size: float
+    median_absolute_deviation: float
+    min_insert_size: float
+    max_insert_size: float
+    mean_insert_size: float
+    standard_deviation: float
+    read_pairs: float
+    pair_orientation: str
+    width_of_10_percent: float
+    width_of_20_percent: float
+    width_of_30_percent: float
+    width_of_40_percent: float
+    width_of_50_percent: float
+    width_of_60_percent: float
+    width_of_70_percent: float
+    width_of_80_percent: float
+    width_of_90_percent: float
+    width_of_95_percent: float
+    width_of_99_percent: float
+
+
+class FastpBeforeFiltering(BaseModel):
+    total_reads: int
+    total_bases: int
+    q20_bases: int
+    q30_bases: int
+    q20_rate: float
+    q30_rate: float
+    read1_mean_length: int
+    read2_mean_length: int
+    gc_content: float
+
+
+class FastpAfterFiltering(BaseModel):
+    total_reads: int
+    total_bases: int
+    q20_bases: int
+    q30_bases: int
+    q20_rate: float
+    q30_rate: float
+    read1_mean_length: int
+    read2_mean_length: int
+    gc_content: float
+
+
+class Fastp(BaseModel):
+    before_filtering: FastpBeforeFiltering
+    after_filtering: FastpAfterFiltering
+
+
+class SamtoolsStats(BaseModel):
+    raw_total_sequences: float
+    filtered_sequences: float
+    sequences: float
+    is_sorted: float
+    first_fragments: float
+    last_fragments: float
+    reads_mapped: float
+    reads_mapped_and_paired: float
+    reads_unmapped: float
+    reads_properly_paired: float
+    reads_paired: float
+    reads_duplicated: float
+    reads_MQ0: float
+    reads_QC_failed: float
+    non_primary_alignments: float
+    supplementary_alignments: float
+    total_length: float
+    total_first_fragment_length: float
+    total_last_fragment_length: float
+    bases_mapped: float
+    bases_trimmed: float
+    bases_duplicated: float
+    mismatches: float
+    error_rate: float
+    average_length: float
+    average_first_fragment_length: float
+    average_last_fragment_length: float
+    maximum_length: float
+    maximum_first_fragment_length: float
+    maximum_last_fragment_length: float
+    average_quality: float
+    insert_size_average: float
+    insert_size_standard_deviation: float
+    inward_oriented_pairs: float
+    outward_oriented_pairs: float
+    pairs_with_other_orientation: float
+    pairs_on_different_chromosomes: float
+    percentage_of_properly_paired_reads: float
+    reads_mapped_percent: float
+    reads_mapped_and_paired_percent: float
+    reads_unmapped_percent: float
+    reads_properly_paired_percent: float
+    reads_paired_percent: float
+    reads_duplicated_percent: float
+    reads_MQ0_percent: float
+    reads_QC_failed_percent: float
+
+
+class PicardHsMetrics(BaseModel):
+    bait_set: str
+    bait_territory: float
+    bait_design_efficiency: float
+    on_bait_bases: float
+    near_bait_bases: float
+    off_bait_bases: float
+    pct_selected_bases: float
+    pct_off_bait: float
+    on_bait_vs_selected: float
+    mean_bait_coverage: float
+    pct_usable_bases_on_bait: float
+    pct_usable_bases_on_target: float
+    fold_enrichment: float
+    hs_library_size: float
+    hs_penalty_10x: float
+    hs_penalty_20x: float
+    hs_penalty_30x: float
+    hs_penalty_40x: float
+    hs_penalty_50x: float
+    hs_penalty_100x: float
+    target_territory: float
+    genome_size: float
+    total_reads: float
+    pf_reads: float
+    pf_bases: float
+    pf_unique_reads: float
+    pf_uq_reads_aligned: float
+    pf_bases_aligned: float
+    pf_uq_bases_aligned: float
+    on_target_bases: float
+    pct_pf_reads: float
+    pct_pf_uq_reads: float
+    pct_pf_uq_reads_aligned: float
+    mean_target_coverage: float
+    median_target_coverage: float
+    max_target_coverage: float
+    min_target_coverage: float
+    zero_cvg_targets_pct: float
+    pct_exc_dupe: float
+    pct_exc_adapter: float
+    pct_exc_mapq: float
+    pct_exc_baseq: float
+    pct_exc_overlap: float
+    pct_exc_off_target: float
+    fold_80_base_penalty: float | None
+    pct_target_bases_1x: float
+    pct_target_bases_2x: float
+    pct_target_bases_10x: float
+    pct_target_bases_20x: float
+    pct_target_bases_30x: float
+    pct_target_bases_40x: float
+    pct_target_bases_50x: float
+    pct_target_bases_100x: float
+    pct_target_bases_250x: float
+    pct_target_bases_500x: float
+    pct_target_bases_1000x: float
+    pct_target_bases_2500x: float
+    pct_target_bases_5000x: float
+    pct_target_bases_10000x: float
+    pct_target_bases_25000x: float
+    pct_target_bases_50000x: float
+    pct_target_bases_100000x: float
+    at_dropout: float
+    gc_dropout: float
+    het_snp_sensitivity: float
+    het_snp_q: float
+
+
+class PicardAlignmentSummary(BaseModel):
+    category: str
+    total_reads: float
+    pf_reads: float
+    pct_pf_reads: float
+    pf_noise_reads: float
+    pf_reads_aligned: float
+    pct_pf_reads_aligned: float
+    pf_aligned_bases: float
+    pf_hq_aligned_reads: float
+    pf_hq_aligned_bases: float
+    pf_hq_aligned_q20_bases: float
+    pf_hq_median_mismatches: float
+    pf_mismatch_rate: float
+    pf_hq_error_rate: float
+    pf_indel_rate: float
+    mean_read_length: float
+    sd_read_length: float
+    median_read_length: float
+    mad_read_length: float
+    min_read_length: float
+    max_read_length: float
+    reads_aligned_in_pairs: float
+    pct_reads_aligned_in_pairs: float
+    pf_reads_improper_pairs: float
+    pct_pf_reads_improper_pairs: float
+    strand_balance: float
+    pct_chimeras: float
+    pct_adapter: float
+    pct_softclip: float
+    pct_hardclip: float
+    avg_pos_3prime_softclip_length: float
+
+
+class SomalierIndividual(BaseModel):
+    family_id: str
+    paternal_id: float
+    maternal_id: float
+    sex: float
+    phenotype: float
+    original_pedigree_sex: float
+    gt_depth_mean: float
+    gt_depth_sd: float
+    depth_mean: float
+    depth_sd: float
+    ab_mean: float
+    ab_std: float
+    n_hom_ref: float
+    n_het: float
+    n_hom_alt: float
+    n_unknown: float
+    p_middling_ab: float
+    X_depth_mean: float
+    X_n: float
+    X_hom_ref: float
+    X_het: float
+    X_hom_alt: float
+    Y_depth_mean: float
+    Y_n: float
+
+
+class SomalierComparison(BaseModel):
+    relatedness: float
+    ibs0: float
+    ibs2: float
+    hom_concordance: float
+    hets_a: float
+    hets_b: float
+    hets_ab: float
+    shared_hets: float
+    hom_alts_a: float
+    hom_alts_b: float
+    shared_hom_alts: float
+    n: float
+    x_ibs0: float
+    x_ibs2: float
+    expected_relatedness: float
+
+
+class Somalier(BaseModel):
+    individual: list[SomalierIndividual]
+    comparison: SomalierComparison
+
+
+class PicardWGSMetrics(BaseModel):
+    genome_territory: float
+    mean_coverage: float
+    sd_coverage: float
+    median_coverage: float
+    mad_coverage: float
+    pct_exc_adapter: float
+    pct_exc_mapq: float
+    pct_exc_dupe: float
+    pct_exc_unpaired: float
+    pct_exc_baseq: float
+    pct_exc_overlap: float
+    pct_exc_capped: float
+    pct_exc_total: float
+    pct_1x: float
+    pct_5x: float
+    pct_10x: float
+    pct_15x: float
+    pct_20x: float
+    pct_25x: float
+    pct_30x: float
+    pct_40x: float
+    pct_50x: float
+    pct_60x: float
+    pct_70x: float
+    pct_80x: float
+    pct_90x: float
+    pct_100x: float
+    fold_80_base_penalty: float
+    fold_90_base_penalty: float
+    fold_95_base_penalty: float
+    het_snp_sensitivity: float
+    het_snp_q: float
+
+
+class PeddyCheck(BaseModel):
+    family_id: str
+    paternal_id: float
+    maternal_id: float
+    sex: float
+    phenotype: float
+    het_call_rate: float
+    het_ratio: float
+    het_mean_depth: float
+    het_idr_baf: float
+    ancestry_prediction: str
+    PC1: float
+    PC2: float
+    PC3: float
+    sex_het_ratio: float
+    depth_outlier_het_check: bool
+    het_count_het_check: float
+    het_ratio_het_check: float
+    idr_baf_het_check: float
+    mean_depth_het_check: float
+    median_depth_het_check: float
+    p10_het_check: float
+    p90_het_check: float
+    sampled_sites_het_check: float
+    call_rate_het_check: float
+    ancestry_prediction_het_check: str
+    ancestry_prob_het_check: float
+    PC1_het_check: float
+    PC2_het_check: float
+    PC3_het_check: float
+    PC4_het_check: float
+    ped_sex_sex_check: str
+    hom_ref_count_sex_check: float
+    het_count_sex_check: float
+    hom_alt_count_sex_check: float
+    het_ratio_sex_check: float
+    predicted_sex_sex_check: str
+    error_sex_check: bool
+    ancestry: str
+
+
+class PicardRNASeqMetrics(BaseModel):
+    pf_bases: float
+    pf_aligned_bases: float
+    ribosomal_bases: float
+    coding_bases: float
+    utr_bases: float
+    intronic_bases: float
+    intergenic_bases: float
+    ignored_reads: float
+    correct_strand_reads: float
+    incorrect_strand_reads: float
+    num_r1_transcript_strand_reads: float
+    num_r2_transcript_strand_reads: float
+    num_unexplained_reads: float
+    pct_r1_transcript_strand_reads: float
+    pct_r2_transcript_strand_reads: float
+    pct_ribosomal_bases: float
+    pct_coding_bases: float
+    pct_utr_bases: float
+    pct_intronic_bases: float
+    pct_intergenic_bases: float
+    pct_mrna_bases: float
+    pct_usable_bases: float
+    pct_correct_strand_reads: float
+    median_cv_coverage: float
+    median_5prime_bias: float
+    median_3prime_bias: float
+    median_5prime_to_3prime_bias: float
+    library: str
+    read_group: str
+    pf_not_aligned_bases: float
+
+
+class STARAlignment(BaseModel):
+    total_reads: float
+    avg_input_read_length: float
+    uniquely_mapped: float
+    uniquely_mapped_percent: float
+    avg_mapped_read_length: float
+    num_splices: float
+    num_annotated_splices: float
+    num_GTAG_splices: float
+    num_GCAG_splices: float
+    num_ATAC_splices: float
+    num_noncanonical_splices: float
+    mismatch_rate: float
+    deletion_rate: float
+    deletion_length: float
+    insertion_rate: float
+    insertion_length: float
+    multimapped: float
+    multimapped_percent: float
+    multimapped_toomany: float
+    multimapped_toomany_percent: float
+    unmapped_mismatches_percent: float
+    unmapped_tooshort_percent: float
+    unmapped_other_percent: float
+    unmapped_mismatches: float
+    unmapped_tooshort: float
+    unmapped_other: float
+
+
+class RNAfusionGeneralStats(BaseModel):
+    insert_size_sum_median: float
+    insert_size_sum_mean: float
+    percent_duplication: float
+    percent_ribosomal_bases: float
+    percent_mrna_bases: float
+    percent_uniquely_mapped: float
+    uniquely_mapped: float
+    after_filtering_q30_rate: float
+    after_filtering_q30_bases: float
+    filtering_result_passed_filter_reads: float
+    after_filtering_gc_content: float
+    pct_surviving: float
+    pct_adapter: float
