@@ -2,7 +2,7 @@
 
 
 from arnold.adapter import ArnoldAdapter
-from arnold.models.database.case import Case
+from arnold.models.database.case.case import Case
 
 
 def get_case(case_id: str, adapter: ArnoldAdapter) -> Case | None:

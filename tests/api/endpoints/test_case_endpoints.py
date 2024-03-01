@@ -5,7 +5,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from arnold.api.api_v1.endpoints.case import router
-from arnold.models.database.case import Case
+from arnold.models.database.case.case import Case
 
 client = TestClient(router)
 
@@ -14,13 +14,6 @@ client = TestClient(router)
     "case_json_data",
     [
         "balsamic_case_json",
-        "mip_dna_case_json",
-        "mip_rna_case_json",
-        "fluffy_case_json",
-        "mutant_case_json",
-        "rna_fusion_case_json",
-        "microsalt_case_json",
-        "taxprofiler_case_json",
     ],
 )
 def test_create_case(

@@ -3,7 +3,7 @@ from arnold.models.database import LimsSample, Step
 from pymongo.results import InsertManyResult, InsertOneResult
 import logging
 
-from arnold.models.database.case import Case
+from arnold.models.database.case.case import Case
 from arnold.models.database.flow_cell import FlowCell
 
 LOG = logging.getLogger(__name__)
