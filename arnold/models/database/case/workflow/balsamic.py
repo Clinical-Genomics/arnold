@@ -16,16 +16,16 @@ from arnold.models.database.case.workflow.workflowinfo import WorkflowInfo
 
 class BalsamicSample(BaseModel):
     sample_id: str
-    alignment_summary_metrics: PicardAlignmentSummary | None
-    duplicates: PicardDuplicates | None
+    alignment_summary_metrics: PicardAlignmentSummary
+    duplicates: PicardDuplicates
     wgs_metrics: PicardWGSMetrics | None = None
-    hs_metrics: PicardHsMetrics | None
-    insert_size: PicardInsertSize | None
-    samtools_stats: SamtoolsStats | None
-    fastp: Fastp | None
+    hs_metrics: PicardHsMetrics
+    insert_size: PicardInsertSize
+    samtools_stats: SamtoolsStats
+    fastp: Fastp
 
 
 class Balsamic(BaseModel):
     samples: list[BalsamicSample]
-    somalier: Somalier | None
+    somalier: Somalier | None = None
     workflow: WorkflowInfo
