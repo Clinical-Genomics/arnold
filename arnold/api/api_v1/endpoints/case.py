@@ -7,6 +7,9 @@ from arnold.settings import get_arnold_adapter
 from arnold.models.database.case.case import Case
 
 router = APIRouter()
+import logging
+
+LOG = logging.getLogger(__name__)
 
 
 @router.post(
@@ -19,20 +22,30 @@ def create_case(
     adapter: ArnoldAdapter = Depends(get_arnold_adapter),
 ) -> JSONResponse:
     """Create a case document in the database."""
-    if read.case.get_case(case_id=case.id, adapter=adapter):
-        return JSONResponse(
-            status_code=status.HTTP_409_CONFLICT,
-            content="Case already in database.",
-        )
     try:
+        existing_case = read.case.get_case(case_id=case.id, adapter=adapter)
+        if existing_case:
+            return JSONResponse(
+                status_code=status.HTTP_409_CONFLICT,
+                content={
+                    "error": "Case already in database.",
+                    "existing_case": existing_case,
+                },
+            )
+
         create.create_case(case=case, adapter=adapter)
-    except Exception as error:
         return JSONResponse(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED, content=f"Error: {error}"
+            status_code=status.HTTP_201_CREATED,
+            content=f"Case with {case.id} was created.",
         )
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED, content=f"Case with {case.id} was created."
-    )
+    except Exception as error:
+        # Log the error for debugging purposes
+        LOG.error(f"Error creating case: {error}", exc_info=True)
+
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": f"Failed to create case. Details: {error}"},
+        )
 
 
 @router.get(
