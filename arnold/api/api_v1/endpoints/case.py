@@ -34,7 +34,7 @@ def create_case(
         create.create_case(case=case, adapter=adapter)
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
-            content=f"Case with {case.case_id} was created.",
+            content=f"Case {case.case_id} was created.",
         )
     except Exception as error:
         # Log the error for debugging purposes
