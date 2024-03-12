@@ -27,10 +27,8 @@ def create_case(
         if existing_case:
             return JSONResponse(
                 status_code=status.HTTP_409_CONFLICT,
-                content={
-                    "error": "Case already in database.",
-                    "existing_case": existing_case,
-                },
+                content= f"Case {existing_case.case_id} already in database."
+                ,
             )
 
         create.create_case(case=case, adapter=adapter)
