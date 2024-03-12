@@ -14,7 +14,7 @@ def test_create_case(mock_adapter: ArnoldAdapter, balsamic_case_json: dict):
     create_case(case=case, adapter=mock_adapter)
 
     # THEN a case is added
-    new_case: Case = mock_adapter.case_collection.find_one({"id": case.id})
+    new_case: Case = mock_adapter.case_collection.find_one({"case_id": case.case_id})
     assert new_case
 
 
@@ -25,8 +25,8 @@ def test_get_case(mock_adapter: ArnoldAdapter, balsamic_case_json: dict):
     create_case(case=case, adapter=mock_adapter)
 
     # WHEN retrieving a case
-    found_case: Case = get_case(case_id=case.id, adapter=mock_adapter)
+    found_case: Case = get_case(case_id=case.case_id, adapter=mock_adapter)
 
     # THEN the case is returned
     assert found_case
-    assert found_case.id == case.id
+    assert found_case.case_id == case.case_id

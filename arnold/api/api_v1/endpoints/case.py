@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Body, Depends, status
 from fastapi.responses import JSONResponse
-
+import logging
 from arnold.crud import create, read
 from arnold.adapter.plugin import ArnoldAdapter
 from arnold.settings import get_arnold_adapter
 from arnold.models.database.case.case import Case
 
 router = APIRouter()
-import logging
+
 
 LOG = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def create_case(
 ) -> JSONResponse:
     """Create a case document in the database."""
     try:
-        existing_case = read.case.get_case(case_id=case.id, adapter=adapter)
+        existing_case = read.case.get_case(case_id=case.case_id, adapter=adapter)
         if existing_case:
             return JSONResponse(
                 status_code=status.HTTP_409_CONFLICT,
@@ -36,7 +36,7 @@ def create_case(
         create.create_case(case=case, adapter=adapter)
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
-            content=f"Case with {case.id} was created.",
+            content=f"Case with {case.case_id} was created.",
         )
     except Exception as error:
         # Log the error for debugging purposes

@@ -40,7 +40,7 @@ def test_get_case(fast_app_client: TestClient, balsamic_case_json, mocker):
     )
 
     # WHEN retrieving a case from the database
-    response = fast_app_client.get(f"/api/v1/case/{case.id}")
+    response = fast_app_client.get(f"/api/v1/case/{case.case_id}")
 
     # THEN a case is returned
     assert response.status_code == status.HTTP_200_OK
