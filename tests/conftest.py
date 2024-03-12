@@ -479,7 +479,7 @@ def balsamic_case_json(
 ) -> dict:
     """Return a json for the case model of the balsamic pipeline."""
     return {
-        "id": "your_case_id",
+        "case_id": "your_case_id",
         "case_info": {
             "samples": [
                 {

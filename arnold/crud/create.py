@@ -63,5 +63,5 @@ def create_case(case: Case, adapter: ArnoldAdapter) -> list[str]:
     """Create a case document in the database."""
     case_json: dict = case.model_dump()
     result: InsertOneResult = adapter.case_collection.insert_one(document=case_json)
-    LOG.info(f"Updating case {case.id}")
+    LOG.info(f"Updating case {case.case_id}")
     return result.inserted_id
