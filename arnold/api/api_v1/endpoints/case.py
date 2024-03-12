@@ -37,7 +37,6 @@ def create_case(
             content=f"Case {case.case_id} was created.",
         )
     except Exception as error:
-        # Log the error for debugging purposes
         LOG.error(f"Error creating case: {error}", exc_info=True)
 
         return JSONResponse(
