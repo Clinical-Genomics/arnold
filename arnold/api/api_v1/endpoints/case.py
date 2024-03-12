@@ -13,7 +13,6 @@ router = APIRouter()
     "/case/",
     response_description="Create a new case document",
     status_code=status.HTTP_201_CREATED,
-    response_model=JSONResponse,
 )
 def create_case(
     case: Case = Body(...),
